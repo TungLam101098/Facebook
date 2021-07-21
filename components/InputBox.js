@@ -20,6 +20,9 @@ const InputBox = () => {
       name: session.user.name,
       email: session.user.email,
       image: session.user.image,
+      likes: 0,
+      comments: 0,
+      shares: 0,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     }).then(doc => {
       if (imageToPost) {
@@ -74,7 +77,7 @@ const InputBox = () => {
             className="rounded-full h-12 bg-gray-100 flex-grow px-5 focus:outline-none"
             type="text"
             ref={inputRef}
-            placeholder={`What's on your mind, ${session.user.name}`}
+            placeholder={`${session.user.name} ơi, bạn đang nghĩ gì thế?`}
           />
           <button hidden type="submit" onClick={sendPost}>
             Submit
@@ -86,21 +89,21 @@ const InputBox = () => {
             className="flex flex-col filter hover:brightness-110 transition duration-150 transform hover:scale-105 cursor-pointer"
           >
             <img className="h-10 object-contain" src={imageToPost} alt="" />
-            <p className="text-xs text-red-500 text-center">Remove</p>
+            <p className="text-xs text-red-500 text-center">Xoá</p>
           </div>
         )}
       </div>
       <div className="flex justify-evenly p-3 border-t">
         <div className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer">
           <VideoCameraIcon className="h-7 text-red-500" />
-          <p className="text-xs sm:text-sm xl:text-base">Live Video</p>
+          <p className="text-xs sm:text-sm xl:text-base">Video trực tiếp</p>
         </div>
         <div
           onClick={() => filepickerRef.current.click()}
           className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer"
         >
           <CameraIcon className="h-7 text-green-400" />
-          <p className="text-xs sm:text-sm xl:text-base">Photo/Video</p>
+          <p className="text-xs sm:text-sm xl:text-base">Ảnh/Video</p>
           <input
             ref={filepickerRef}
             onChange={addImageToPost}
@@ -110,7 +113,7 @@ const InputBox = () => {
         </div>
         <div className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer">
           <EmojiHappyIcon className="h-7 text-yellow-300" />
-          <p className="text-xs sm:text-sm xl:text-base">Feeling/Activity</p>
+          <p className="text-xs sm:text-sm xl:text-base">Cảm xúc/Hoạt động</p>
         </div>
       </div>
     </div>

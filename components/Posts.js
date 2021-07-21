@@ -20,6 +20,9 @@ const Posts = ({ posts }) => {
             timestamp = {post.data().timestamp}
             image={post.data().image}
             postImage={post.data().postImage}
+            comments={post.data().comments}
+            likes={post.data().likes}
+            shares={post.data().shares}
           />
         ))) : (
           posts.map((post) => (
@@ -31,6 +34,9 @@ const Posts = ({ posts }) => {
               timestamp = {post.data().timestamp}
               image={post.data().image}
               postImage={post.data().postImage}
+              comments={post.data().comments}
+              likes={post.data().likes}
+              shares={post.data().shares}
             />
           ))
         )

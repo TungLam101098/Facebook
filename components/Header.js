@@ -62,7 +62,7 @@ function Header() {
           height="40"
           layout="fixed"
         />
-        <p className="whitespace-nowrap font-semibold pr-3">{session.user.name}</p>
+        <p className="hidden sm:inline-flex whitespace-nowrap font-semibold pr-3">{session.user.name}</p>
         <ViewGridIcon className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300" />
         <ChatIcon className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300" />
         <BellIcon className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300" />
