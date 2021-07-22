@@ -1,8 +1,20 @@
 import Head from "next/head";
 import { QuestionMarkCircleIcon } from "@heroicons/react/solid";
 import { useRef } from "react";
+import { useDispatch } from "react-redux";
+import { infoUser } from "../redux/features/userSlice";
+import { useRouter } from "next/router";
+import { auth } from "../firebase";
 
 const Login = () => {
+  const verification = Math.floor(10000 + Math.random() * 90000);
+  const router = useRouter();
+
+  const dispatch = useDispatch();
+
+  const emailLoginRef = useRef(null);
+  const passwordLoginRef = useRef(null);
+
   const surnameRef = useRef(null);
   const nameRef = useRef(null);
   const emailRef = useRef(null);
@@ -13,9 +25,16 @@ const Login = () => {
   const MaleRef = useRef(null);
   const FemaleRef = useRef(null);
 
-  const LoginSubmit = (e) => {
+  const LoginSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login");
+    const email = emailLoginRef.current.value;
+    const password = passwordLoginRef.current.value;
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+    } catch (err) {
+      alert("Email bạn không kết nối với tài khoản nào.")
+      console.log(err);
+    }
   };
 
   const RegisterSubmit = () => {
@@ -26,12 +45,40 @@ const Login = () => {
       passwordRef.current.value === "" ||
       datedRef.current.value === "" ||
       monthRef.current.value === "" ||
-      (!MaleRef.current.checked  &&
-      !FemaleRef.current.checked  )
+      yearRef.current.value === "" ||
+      (!MaleRef.current.checked && !FemaleRef.current.checked)
     ) {
       alert("Invalid input");
     } else {
-      alert('OKE')
+      const birthday =
+        datedRef.current.value + monthRef.current.value + yearRef.current.value;
+      if (MaleRef.current.checked) {
+        dispatch(
+          infoUser({
+            surname: surnameRef.current.value,
+            name: nameRef.current.value,
+            email: emailRef.current.value,
+            password: passwordRef.current.value,
+            birthday: birthday,
+            gender: MaleRef.current.value,
+            verification: verification,
+          })
+        );
+      }
+      if (FemaleRef.current.checked) {
+        dispatch(
+          infoUser({
+            surname: surnameRef.current.value,
+            name: nameRef.current.value,
+            email: emailRef.current.value,
+            password: passwordRef.current.value,
+            birthday: birthday,
+            gender: FemaleRef.current.value,
+            verification: verification,
+          })
+        );
+      }
+      router.push("/confirmEmail");
     }
   };
 
@@ -81,12 +128,14 @@ const Login = () => {
               <input
                 className="style-input w-full"
                 type="email"
+                ref={emailLoginRef}
                 placeholder="Email của bạn"
                 required
               />
               <input
                 className="style-input w-full"
                 type="password"
+                ref={passwordLoginRef}
                 placeholder="Mật khẩu"
                 required
               />

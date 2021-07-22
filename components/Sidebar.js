@@ -1,4 +1,3 @@
-import { useSession } from 'next-auth/client';
 import {
   ChevronDownIcon,
   ShoppingBagIcon,
@@ -6,17 +5,20 @@ import {
 } from '@heroicons/react/outline';
 import {
   CalendarIcon,
-  ClockIcon,
   DesktopComputerIcon,
   UsersIcon
 } from "@heroicons/react/solid";
 import SidebarRow from './SidebarRow';
+import { useSelector } from "react-redux";
+import { selectInfo } from '../redux/features/userSlice';
 
 const Sidebar = () => {
-  const [session, loading] = useSession();
+  // const [user, loading] = useAuthState(auth);
+  const infoUser = useSelector(selectInfo);
+  if(!infoUser.AvatarImage) return null;
   return (
     <div className="p-2 mt-5 max-w-[600px] xl:min-w-[300px]">
-      <SidebarRow src={session.user.image} title={session.user.name} />
+      <SidebarRow src={infoUser.AvatarImage} title={infoUser.name} />
       <SidebarRow Icon={UsersIcon} title="Bạn bè" />
       <SidebarRow Icon={UserGroupIcon} title="Nhóm" />
       <SidebarRow Icon={ShoppingBagIcon} title="Marketplace" />

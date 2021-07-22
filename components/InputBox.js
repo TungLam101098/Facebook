@@ -1,13 +1,16 @@
-import { useSession } from "next-auth/client";
+// import { useSession } from "next-auth/client";
 import Image from "next/image";
 import { EmojiHappyIcon } from "@heroicons/react/outline";
 import { CameraIcon, VideoCameraIcon } from "@heroicons/react/solid";
 import { useRef, useState } from "react";
 import { db, storage } from "../firebase";
 import firebase from "firebase";
+import { useSelector } from "react-redux";
+import { selectInfo } from '../redux/features/userSlice';
 
 const InputBox = () => {
-  const [session] = useSession();
+  // const [session] = useSession();
+  const infoUser = useSelector(selectInfo);
   const inputRef = useRef(null);
   const filepickerRef = useRef(null);
   const [imageToPost, setImageToPost] = useState(null);
@@ -17,9 +20,9 @@ const InputBox = () => {
     if (!inputRef.current.value) return;
     db.collection("posts").add({
       message: inputRef.current.value,
-      name: session.user.name,
-      email: session.user.email,
-      image: session.user.image,
+      // name: session.user.name,
+      // email: session.user.email,
+      // image: session.user.image,
       likes: 0,
       comments: 0,
       shares: 0,
@@ -61,13 +64,14 @@ const InputBox = () => {
   const removeImage = () => {
     setImageToPost(null);
   };
+  if(!infoUser.AvatarImage) return null;
 
   return (
     <div className="bg-white p-2 rounded-2xl shadow-md text-gray-500 font-medium mt-6">
       <div className="flex space-x-4 p-4 items-center">
         <Image
           className="rounded-full"
-          src={session.user.image}
+          src={infoUser.AvatarImage}
           width={40}
           height={40}
           layout="fixed"
@@ -77,7 +81,7 @@ const InputBox = () => {
             className="rounded-full h-12 bg-gray-100 flex-grow px-5 focus:outline-none"
             type="text"
             ref={inputRef}
-            placeholder={`${session.user.name} ơi, bạn đang nghĩ gì thế?`}
+            placeholder={` ${infoUser.name} ơi, bạn đang nghĩ gì thế?`}
           />
           <button hidden type="submit" onClick={sendPost}>
             Submit

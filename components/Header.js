@@ -14,13 +14,47 @@ import {
   ShoppingCartIcon,
 } from "@heroicons/react/outline";
 import HeaderIcon from "./HeaderIcon";
-import { signOut, useSession } from "next-auth/client";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, db } from "../firebase";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { infoUser } from "../redux/features/userSlice";
 
 function Header() {
-  const [session] = useSession();
-  if (!session) {
-    return null;
+  const [user] = useAuthState(auth);
+  const userRef = db.collection("users").doc(user.uid);
+  const [userData, setUserData] = useState(null);
+  const dispatch = useDispatch();
+  const signOut = () => {
+    auth.signOut();
+    dispatch(
+      infoUser({
+        AvatarImage: null,
+      })
+    );
   }
+  useEffect(() => {
+    const getData = async () => {
+      const doc = await userRef.get();
+      if (!doc.exists) {
+        console.log("No such document!");
+      } else {
+        setUserData(doc.data());
+        dispatch(
+          infoUser({
+            surname: doc.data().surname,
+            name: doc.data().name,
+            email: doc.data().email,
+            birthday: doc.data().birthday,
+            gender: doc.data().gender,
+            AvatarImage: doc.data().AvatarImage,
+          })
+        );
+      }
+    };
+    getData();
+  }, [user]);
+  if(!userData) return null;
   return (
     <div className="sticky top-0 z-50 bg-white flex items-center p-2 lg:px-5 shadow-md">
       {/* Left */}
@@ -54,15 +88,16 @@ function Header() {
       {/* Right */}
       <div className="flex items-center sm:space-x-2 justify-end">
         {/* Profile pic */}
+        
         <Image
-          onClick={signOut}
+          onClick={() => signOut()}
           className="rounded-full cursor-pointer"
-          src={session.user.image}
-          width="40"
-          height="40"
+          src={userData?.AvatarImage}
+          width={40}
+          height={40}
           layout="fixed"
         />
-        <p className="hidden sm:inline-flex whitespace-nowrap font-semibold pr-3">{session.user.name}</p>
+        <p  className="hidden sm:inline-flex whitespace-nowrap font-semibold pr-3">{userData?.name}</p>
         <ViewGridIcon className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300" />
         <ChatIcon className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300" />
         <BellIcon className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300" />
