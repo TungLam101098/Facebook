@@ -12,6 +12,7 @@ function CompleteRegistration() {
   const [imageAvatar, setImageAvatar] = useState(null);
   const infoUser = useSelector(selectInfo);
   const router = useRouter();
+  const [number, setNumber] = useState(0);
 
   const CompleteRegister = async () => {
     if (imageAvatar) {
@@ -21,79 +22,59 @@ function CompleteRegistration() {
       );
       const userRef = firestore.doc(`users/${user.uid}`);
       const snapShot = await userRef.get();
-      if (!snapShot.exists){
-        try{
-          await userRef.set({
-            email: infoUser.email,
-            name: infoUser.name,
-            surname: infoUser.surname,
-            gender: infoUser.gender,
-            birthday: infoUser.birthday,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          }).then(() => {
-            const uploadTask = storage
-              .ref(`users/${user.uid}`)
-              .putString(imageAvatar, "data_url");
-            uploadTask.on(
-              "state_change",
-              null,
-              (error) => console.log(error),
-              () => {
-                storage
-                  .ref("users")
-                  .child(user.uid)
-                  .getDownloadURL()
-                  .then((url) => {
-                    db.collection("users").doc(user.uid).set(
-                      {
-                        AvatarImage: url,
-                      },
-                      { merge: true }
-                    );
-                  });
-              }
-            );
-          });
-        } catch(error) {
+      if (!snapShot.exists) {
+        try {
+          await userRef
+            .set({
+              email: infoUser.email,
+              name: infoUser.name,
+              surname: infoUser.surname,
+              gender: infoUser.gender,
+              birthday: infoUser.birthday,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            })
+            .then(() => {
+              const uploadTask = storage
+                .ref(`users/${user.uid}`)
+                .putString(imageAvatar, "data_url");
+              uploadTask.on(
+                "state_change",
+                (snapshot) => {
+                  var progress =
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  console.log("Upload is " + progress + "% done");
+                  setNumber(progress);
+                  switch (snapshot.state) {
+                    case firebase.storage.TaskState.PAUSED:
+                      console.log("Upload is paused");
+                      break;
+                    case firebase.storage.TaskState.RUNNING:
+                      console.log("Upload is running");
+                      break;
+                  }
+                },
+                (error) => console.log(error),
+                () => {
+                  storage
+                    .ref("users")
+                    .child(user.uid)
+                    .getDownloadURL()
+                    .then((url) => {
+                      db.collection("users").doc(user.uid).set(
+                        {
+                          AvatarImage: url,
+                        },
+                        { merge: true }
+                      );
+                    });
+                  router.push("/");
+                }
+              );
+            });
+        } catch (error) {
           console.log(error);
         }
       }
-      // await db
-      //   .collection("users")
-      //   .add({
-      //     email: infoUser.email,
-      //     name: infoUser.name,
-      //     surname: infoUser.surname,
-      //     gender: infoUser.gender,
-      //     birthday: infoUser.birthday,
-      //     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      //   })
-      //   .then((doc) => {
-      //     const uploadTask = storage
-      //       .ref(`users/${doc.id}`)
-      //       .putString(imageAvatar, "data_url");
-      //     uploadTask.on(
-      //       "state_change",
-      //       null,
-      //       (error) => console.log(error),
-      //       () => {
-      //         // when the upload completed
-      //         storage
-      //           .ref("users")
-      //           .child(doc.id)
-      //           .getDownloadURL()
-      //           .then((url) => {
-      //             db.collection("users").doc(doc.id).set(
-      //               {
-      //                 AvatarImage: url,
-      //               },
-      //               { merge: true }
-      //             );
-      //           });
-      //       }
-      //     );
-      //   });
-      router.push("/");
     } else {
       alert("Vui lòng chọn ảnh avatar");
     }
@@ -159,9 +140,10 @@ function CompleteRegistration() {
           <div className="text-center">
             <button
               onClick={() => CompleteRegister()}
-              className="mt-10 px-6 rounded-md py-3 border-none bg-green-400 text-white hover:bg-green-500 "
+              className="mt-10 px-6 rounded-md py-3 border-none bg-green-400 text-white hover:bg-green-500 flex flex-1"
             >
-              Hoàn Thành
+              Hoàn Thành {number !== 0 && Math.round(number * 100) / 100}{" "}
+              {number !== 0 && <p>%</p>}
             </button>
           </div>
         </div>

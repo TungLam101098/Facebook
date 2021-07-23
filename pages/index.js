@@ -20,7 +20,7 @@ export default function Home({ posts }) {
       <Head>
         <title>Facebook</title>
       </Head>
-      <Header />
+      <Header user={user} />
       <main className="flex">
         {/* Sidebar */}
         <Sidebar />
