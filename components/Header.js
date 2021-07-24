@@ -24,6 +24,7 @@ import { Avatar } from "@material-ui/core";
 import { useRouter } from "next/router";
 import firebase from "firebase";
 import TimeAgo from 'timeago-react';
+import { useCollection } from "react-firebase-hooks/firestore";
 
 function Header({ user }) {
   const router = useRouter();
@@ -35,8 +36,24 @@ function Header({ user }) {
   const [usersData, setUsersData] = useState([]);
   const [usersDataSearch, setUsersDataSearch] = useState([]);
   const [query, setQuery] = useState("");
-  const [notifications, setNotifications] = useState([]);
   const [lengthOfNotification, setlengthOfNotification] = useState(0);
+
+  const [realtimeNotification] = useCollection(
+    db.collection("users").doc(user.uid).collection('listnotification').orderBy("timestamp", "desc")
+  );
+
+  useEffect(() => {
+    let count = 0;
+    if (!realtimeNotification) {
+      return;
+    }
+    realtimeNotification.docs.map(doc => {
+      if (!doc.data().seen) {
+        count++;
+      }
+    })
+    setlengthOfNotification(count);
+  }, [realtimeNotification])
 
   useEffect(() => {
     const getDataFromFirebase = async () => {
@@ -103,30 +120,6 @@ function Header({ user }) {
           })
         );
       }
-      let count = 0;
-      const notificationRef = db
-        .collection("users")
-        .doc(user.uid)
-        .collection("listnotification");
-      const docNotification = await notificationRef.get();
-      docNotification.forEach((doc) => {
-        if (!doc.data().seen) {
-          count++;
-        }
-        setNotifications((prevState) => [
-          ...prevState,
-          {
-            id: doc.data().id,
-            idOfNotification: doc.id,
-            seen: doc.data().seen,
-            timestamp: doc.data().timestamp,
-            type: doc.data().type,
-            name: doc.data().name,
-            image: doc.data().AvatarImage,
-          },
-        ]);
-      });
-      setlengthOfNotification(count);
     };
     getData();
   }, [user]);
@@ -145,14 +138,6 @@ function Header({ user }) {
   };
 
   const addFriend = async (id, idOfNotification) => {
-    const newArrayOfNotification = notifications.map((notification) => {
-      if (notification.id === id) {
-        return { ...notification, seen: !notification.seen };
-      }
-      return notification;
-    });
-    setNotifications(newArrayOfNotification);
-    setlengthOfNotification(lengthOfNotification - 1);
 
     const listSendFriendsOfUserRef = db
       .collection("users")
@@ -215,15 +200,6 @@ function Header({ user }) {
   };
 
   const readNotification = async (id, idOfNotification) => {
-    const newArrayOfNotification = notifications.map((notification) => {
-      if (notification.id === id) {
-        return { ...notification, seen: !notification.seen };
-      }
-      return notification;
-    });
-    setNotifications(newArrayOfNotification);
-    setlengthOfNotification(lengthOfNotification - 1);
-
     const listNoticationsRef = db
       .collection("users")
       .doc(user.uid)
@@ -332,6 +308,13 @@ function Header({ user }) {
           }}
           className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300"
         />
+        {/* {
+          realtimeNotification.docs.length !== 0 && (
+            <div className="w-5 h-5 bg-red-500 flex justify-center rounded-full text-white items-center absolute right-[15%] top-[-10%]">
+            <span>{realtimeNotification.docs.length}</span>
+          </div>
+          )
+        } */}
         {lengthOfNotification !== 0 && (
           <div className="w-5 h-5 bg-red-500 flex justify-center rounded-full text-white items-center absolute right-[15%] top-[-10%]">
             <span>{lengthOfNotification}</span>
@@ -374,37 +357,37 @@ function Header({ user }) {
             </div>
           </div>
         )}
-        {styleOfNotification && (
+        {styleOfNotification && realtimeNotification && (
           <div className="rounded-md bg-white w-96 shadow-md p-6 absolute right-0 top-full">
             <ul>
-              {notifications.map((notification) => (
+              {realtimeNotification.docs.map((notification) => (
                 <li key={notification.id}>
                   <div className="flex items-center cursor-pointer p-2 mb-4 rounded-md">
                     <Image
                       className="rounded-full cursor-pointer"
                       width={50}
                       height={50}
-                      src={notification.image}
+                      src={notification.data()?.AvatarImage}
                     />
                     <div className="ml-4">
-                      {notification.type === "addFriends" && (
+                      {notification.data()?.type === "addFriends" && (
                         <h4 className="text-base">
-                          <span className="font-bold">{notification.name}</span>{" "}
+                          <span className="font-bold">{notification.data()?.name}</span>{" "}
                           đã gửi lời mời kết bạn
                         </h4>
                       )}
-                      {notification.type === "addFriendsComplete" && (
+                      {notification.data()?.type === "addFriendsComplete" && (
                         <div
                           onClick={() => {
                             readNotification(
-                              notification.id,
-                              notification.idOfNotification
+                              notification.data()?.id, 
+                              notification.id
                             );
                           }}
                         >
                           <h4 className="text-base">
                             <span className="font-bold">
-                              {notification.name}
+                              {notification.data()?.name}
                             </span>{" "}
                             đã chấp nhận lời mời kết bạn
                           </h4>
@@ -412,16 +395,16 @@ function Header({ user }) {
                       )}
 
                       <span className="text-blue-500">
-                        <TimeAgo datetime={notification.timestamp.toDate().getTime()} />
+                        <TimeAgo datetime={notification.data()?.timestamp.toDate().getTime()} />
                       </span>
-                      {!notification.seen &&
-                        notification.type === "addFriends" && (
+                      {!notification.data()?.seen &&
+                        notification.data()?.type === "addFriends" && (
                           <div className="flex">
                             <button
                               onClick={() =>
                                 addFriend(
-                                  notification.id,
-                                  notification.idOfNotification
+                                  notification.data()?.id,
+                                  notification.id
                                 )
                               }
                               className="p-2 px-5 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600"
@@ -434,7 +417,7 @@ function Header({ user }) {
                           </div>
                         )}
                     </div>
-                    {!notification.seen && (
+                    {!notification.data()?.seen && (
                       <div className="h-3 w-3 bg-blue-500 rounded-full"></div>
                     )}
                   </div>

@@ -34,7 +34,7 @@ function User({ uid }) {
         <HeaderUser userData={userData} id={uid} />
         <div className="flex justify-center bg-gray-200">
           <div className="w-full sm:w-3/6">
-            <Posts />
+            <Posts uid={uid} />
           </div>
         </div>
       </main>

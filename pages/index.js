@@ -24,7 +24,7 @@ export default function Home({ posts }) {
       <main className="flex">
         {/* Sidebar */}
         <Sidebar />
-        <Feed posts={posts} />
+        <Feed posts={posts} user={user} />
         {/* Widgets */}
         <Widgets />
       </main>

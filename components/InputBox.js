@@ -6,9 +6,9 @@ import { useRef, useState } from "react";
 import { db, storage } from "../firebase";
 import firebase from "firebase";
 import { useSelector } from "react-redux";
-import { selectInfo } from '../redux/features/userSlice';
+import { selectInfo } from "../redux/features/userSlice";
 
-const InputBox = () => {
+const InputBox = ({ user }) => {
   // const [session] = useSession();
   const infoUser = useSelector(selectInfo);
   const inputRef = useRef(null);
@@ -17,37 +17,50 @@ const InputBox = () => {
 
   const sendPost = (e) => {
     e.preventDefault();
+    if (!infoUser) return;
     if (!inputRef.current.value) return;
-    db.collection("posts").add({
-      message: inputRef.current.value,
-      // name: session.user.name,
-      // email: session.user.email,
-      // image: session.user.image,
-      likes: 0,
-      comments: 0,
-      shares: 0,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    }).then(doc => {
-      if (imageToPost) {
-        // funky upload stuff for image
-        const uploadTask = storage.ref(`posts/${doc.id}`).putString(imageToPost, 'data_url')
-        removeImage();
+    db.collection("users")
+      .doc(user.uid)
+      .collection("posts")
+      .add({
+        message: inputRef.current.value,
+        name: infoUser.surname.concat(" ", infoUser.name),
+        image: infoUser.AvatarImage,
+        likes: 0,
+        comments: 0,
+        shares: 0,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+      .then((doc) => {
+        if (imageToPost) {
+          // funky upload stuff for image
+          const uploadTask = storage
+            .ref(`posts/${doc.id}`)
+            .putString(imageToPost, "data_url");
+          removeImage();
 
-        uploadTask.on(
-          "state_change",
-          null,
-          (error) => console.log(error),
-          () => {
-            // when the upload completed
-            storage.ref('posts').child(doc.id).getDownloadURL().then(url => {
-              db.collection('posts').doc(doc.id).set({
-                postImage: url
-              }, {merge: true })
-            })
-          }
-        )
-      }
-    })
+          uploadTask.on(
+            "state_change",
+            null,
+            (error) => console.log(error),
+            () => {
+              // when the upload completed
+              storage
+                .ref("posts")
+                .child(doc.id)
+                .getDownloadURL()
+                .then((url) => {
+                  db.collection("users").doc(user.uid).collection('posts').doc(doc.id).set(
+                    {
+                      postImage: url,
+                    },
+                    { merge: true }
+                  );
+                });
+            }
+          );
+        }
+      });
     inputRef.current.value = "";
   };
 
@@ -64,7 +77,7 @@ const InputBox = () => {
   const removeImage = () => {
     setImageToPost(null);
   };
-  if(!infoUser.AvatarImage) return null;
+  if (!infoUser.AvatarImage) return null;
 
   return (
     <div className="bg-white p-2 rounded-2xl shadow-md text-gray-500 font-medium mt-6">

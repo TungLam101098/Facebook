@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { ChatAltIcon, ShareIcon, ThumbUpIcon } from "@heroicons/react/outline";
 import { ThumbUpIcon as ThumbUpIconSolid } from "@heroicons/react/solid";
 
-const Post = ({ name, email, timestamp, image, postImage, message, comments, likes, shares }) => {
+const Post = ({ name, timestamp, image, postImage, message, comments, likes, shares }) => {
   const [styleOfThum, setStyleOfThum] = useState(false);
   const addLike = () => {
     setStyleOfThum(!styleOfThum);
