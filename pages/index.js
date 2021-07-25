@@ -4,12 +4,11 @@ import Header from "../components/Header";
 import Login from "../components/Login";
 import Sidebar from "../components/Sidebar";
 import Widgets from "../components/Widgets";
-import { db } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import Loading from "../components/Loading";
 
-export default function Home({ posts }) {
+export default function Home() {
   const [user, loading] = useAuthState(auth);
 
   if (loading) return <Loading />;
@@ -24,7 +23,7 @@ export default function Home({ posts }) {
       <main className="flex">
         {/* Sidebar */}
         <Sidebar />
-        <Feed posts={posts} user={user} />
+        <Feed user={user} />
         {/* Widgets */}
         <Widgets />
       </main>
@@ -32,16 +31,3 @@ export default function Home({ posts }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  const posts = await db.collection("posts").orderBy("timestamp", "desc").get();
-  const docs = posts.docs.map((post) => ({
-    id: post.id,
-    ...post.data(),
-    timestamp: null,
-  }));
-  return {
-    props: {
-      posts: docs,
-    },
-  };
-}

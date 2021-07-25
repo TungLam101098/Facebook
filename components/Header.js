@@ -23,7 +23,7 @@ import Link from "next/link";
 import { Avatar } from "@material-ui/core";
 import { useRouter } from "next/router";
 import firebase from "firebase";
-import TimeAgo from 'timeago-react';
+import TimeAgo from "timeago-react";
 import { useCollection } from "react-firebase-hooks/firestore";
 
 function Header({ user }) {
@@ -39,7 +39,11 @@ function Header({ user }) {
   const [lengthOfNotification, setlengthOfNotification] = useState(0);
 
   const [realtimeNotification] = useCollection(
-    db.collection("users").doc(user.uid).collection('listnotification').orderBy("timestamp", "desc")
+    db
+      .collection("users")
+      .doc(user.uid)
+      .collection("listnotification")
+      .orderBy("timestamp", "desc")
   );
 
   useEffect(() => {
@@ -47,13 +51,13 @@ function Header({ user }) {
     if (!realtimeNotification) {
       return;
     }
-    realtimeNotification.docs.map(doc => {
+    realtimeNotification.docs.map((doc) => {
       if (!doc.data().seen) {
         count++;
       }
-    })
+    });
     setlengthOfNotification(count);
-  }, [realtimeNotification])
+  }, [realtimeNotification]);
 
   useEffect(() => {
     const getDataFromFirebase = async () => {
@@ -138,7 +142,6 @@ function Header({ user }) {
   };
 
   const addFriend = async (id, idOfNotification) => {
-
     const listSendFriendsOfUserRef = db
       .collection("users")
       .doc(user.uid)
@@ -191,6 +194,29 @@ function Header({ user }) {
       .doc(user.uid)
       .delete();
 
+    await db
+      .collection("users")
+      .doc(user.uid)
+      .collection("listapprovalwaittingfriends")
+      .doc(id)
+      .delete();
+  };
+
+  const unFriend = async (id, idOfNotification) => {
+    const listNoticationsRef = db
+      .collection("users")
+      .doc(user.uid)
+      .collection("listnotification")
+      .doc(idOfNotification);
+    await listNoticationsRef.update({
+      seen: true,
+    });
+    await db
+      .collection("users")
+      .doc(id)
+      .collection("listsendfriends")
+      .doc(user.uid)
+      .delete();
     await db
       .collection("users")
       .doc(user.uid)
@@ -308,13 +334,6 @@ function Header({ user }) {
           }}
           className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300"
         />
-        {/* {
-          realtimeNotification.docs.length !== 0 && (
-            <div className="w-5 h-5 bg-red-500 flex justify-center rounded-full text-white items-center absolute right-[15%] top-[-10%]">
-            <span>{realtimeNotification.docs.length}</span>
-          </div>
-          )
-        } */}
         {lengthOfNotification !== 0 && (
           <div className="w-5 h-5 bg-red-500 flex justify-center rounded-full text-white items-center absolute right-[15%] top-[-10%]">
             <span>{lengthOfNotification}</span>
@@ -358,7 +377,7 @@ function Header({ user }) {
           </div>
         )}
         {styleOfNotification && realtimeNotification && (
-          <div className="rounded-md bg-white w-96 shadow-md p-6 absolute right-0 top-full">
+          <div className="rounded-md bg-white w-96 shadow-md p-6 absolute right-0 top-full flex-grow h-80 overflow-y-auto scrollbar-hide">
             <ul>
               {realtimeNotification.docs.map((notification) => (
                 <li key={notification.id}>
@@ -372,15 +391,78 @@ function Header({ user }) {
                     <div className="ml-4">
                       {notification.data()?.type === "addFriends" && (
                         <h4 className="text-base">
-                          <span className="font-bold">{notification.data()?.name}</span>{" "}
+                          <span className="font-bold">
+                            {notification.data()?.name}
+                          </span>{" "}
                           đã gửi lời mời kết bạn
                         </h4>
+                      )}
+                      {notification.data()?.type === "addLike" && (
+                        <div onClick={() => {
+                          readNotification(
+                            notification.data()?.id,
+                            notification.id
+                          );
+                        }}>
+                          <h4 className="text-base">
+                            <span className="font-bold">
+                              {notification.data()?.name}
+                            </span>{" "}
+                            đã thích bài viết của bạn
+                          </h4>
+                          {notification.data()?.img!== "notImg" && (
+                            <Image
+                              className="cursor-pointer"
+                              width={50}
+                              height={50}
+                              src={notification.data()?.img}
+                            />
+                          )}
+                        </div>
+                      )}
+                      {notification.data()?.type === "addComment" && (
+                        <div onClick={() => {
+                          readNotification(
+                            notification.data()?.id,
+                            notification.id
+                          );
+                        }}>
+                          <h4 className="text-base">
+                            <span className="font-bold">
+                              {notification.data()?.name}
+                            </span>{" "}
+                            đã bình luận bài viết của bạn
+                          </h4>
+                          {notification.data()?.img!== "notImg" && (
+                            <Image
+                              className="cursor-pointer"
+                              width={50}
+                              height={50}
+                              src={notification.data()?.img}
+                            />
+                          )}
+                        </div>
+                      )}
+                      {notification.data()?.type === "posts" && (
+                        <div onClick={() => {
+                          readNotification(
+                            notification.data()?.id,
+                            notification.id
+                          );
+                        }}>
+                          <h4 className="text-base">
+                          <span className="font-bold">
+                            {notification.data()?.name}
+                          </span>{" "}
+                          đã thêm một bài viết
+                        </h4>
+                        </div>
                       )}
                       {notification.data()?.type === "addFriendsComplete" && (
                         <div
                           onClick={() => {
                             readNotification(
-                              notification.data()?.id, 
+                              notification.data()?.id,
                               notification.id
                             );
                           }}
@@ -395,7 +477,12 @@ function Header({ user }) {
                       )}
 
                       <span className="text-blue-500">
-                        <TimeAgo datetime={notification.data()?.timestamp.toDate().getTime()} />
+                        <TimeAgo
+                          datetime={notification
+                            .data()
+                            ?.timestamp.toDate()
+                            .getTime()}
+                        />
                       </span>
                       {!notification.data()?.seen &&
                         notification.data()?.type === "addFriends" && (
@@ -411,7 +498,15 @@ function Header({ user }) {
                             >
                               Chấp nhận
                             </button>
-                            <button className="p-2 px-5 py-2 rounded-md bg-gray-400 text-white hover:bg-gray-500 ml-3">
+                            <button
+                              onClick={() =>
+                                unFriend(
+                                  notification.data()?.id,
+                                  notification.id
+                                )
+                              }
+                              className="p-2 px-5 py-2 rounded-md bg-gray-400 text-white hover:bg-gray-500 ml-3"
+                            >
                               Từ chối
                             </button>
                           </div>

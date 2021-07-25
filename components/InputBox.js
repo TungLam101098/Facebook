@@ -7,6 +7,7 @@ import { db, storage } from "../firebase";
 import firebase from "firebase";
 import { useSelector } from "react-redux";
 import { selectInfo } from "../redux/features/userSlice";
+import { useCollection } from "react-firebase-hooks/firestore";
 
 const InputBox = ({ user }) => {
   // const [session] = useSession();
@@ -14,6 +15,9 @@ const InputBox = ({ user }) => {
   const inputRef = useRef(null);
   const filepickerRef = useRef(null);
   const [imageToPost, setImageToPost] = useState(null);
+  const [realtimeFriends] = useCollection(
+    db.collection("users").doc(user.uid).collection("listfriends")
+  );
 
   const sendPost = (e) => {
     e.preventDefault();
@@ -26,8 +30,6 @@ const InputBox = ({ user }) => {
         message: inputRef.current.value,
         name: infoUser.surname.concat(" ", infoUser.name),
         image: infoUser.AvatarImage,
-        likes: 0,
-        comments: 0,
         shares: 0,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       })
@@ -61,6 +63,23 @@ const InputBox = ({ user }) => {
           );
         }
       });
+    
+    if(!realtimeFriends) return;
+
+    realtimeFriends.docs.map(friend => {
+      db.collection("users")
+      .doc(friend.id)
+      .collection("listnotification")
+      .add({
+        AvatarImage: infoUser.AvatarImage,
+        name: infoUser.surname.concat(" ", infoUser.name),
+        id: user.uid,
+        seen: false,
+        type: "posts",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+    })
+
     inputRef.current.value = "";
   };
 
