@@ -1,18 +1,13 @@
 import { SearchIcon } from '@heroicons/react/outline';
 import { DotsHorizontalIcon, VideoCameraIcon } from '@heroicons/react/solid';
 import Contact from './Contact';
+import { useCollection } from "react-firebase-hooks/firestore";
+import { db } from '../firebase';
 
-const contacts = [
-  {src: "https://upload.wikimedia.org/wikipedia/commons/8/85/Elon_Musk_Royal_Society_%28crop1%29.jpg", name: "Elon Musk"},
-  {src: "https://upload.wikimedia.org/wikipedia/commons/8/85/Elon_Musk_Royal_Society_%28crop1%29.jpg", name: "Elon Musk"},
-  {src: "https://upload.wikimedia.org/wikipedia/commons/8/85/Elon_Musk_Royal_Society_%28crop1%29.jpg", name: "Elon Musk"},
-  {src: "https://upload.wikimedia.org/wikipedia/commons/8/85/Elon_Musk_Royal_Society_%28crop1%29.jpg", name: "Elon Musk"},
-  {src: "https://upload.wikimedia.org/wikipedia/commons/8/85/Elon_Musk_Royal_Society_%28crop1%29.jpg", name: "Elon Musk"},
-  {src: "https://upload.wikimedia.org/wikipedia/commons/8/85/Elon_Musk_Royal_Society_%28crop1%29.jpg", name: "Elon Musk"},
-  {src: "https://upload.wikimedia.org/wikipedia/commons/8/85/Elon_Musk_Royal_Society_%28crop1%29.jpg", name: "Elon Musk"},
-]
-
-const Widgets = () => {
+const Widgets = ({ user }) => {
+  const [realtimeFriends] = useCollection(
+    db.collection("users").doc(user.uid).collection("listfriends")
+  );
   return (
     <div className="hidden lg:flex flex-col w-60 p-2 mt-5">
       <div className="flex justify-between items-center text-gray-500 mb-5">
@@ -23,9 +18,12 @@ const Widgets = () => {
           <DotsHorizontalIcon className="h-6" />
         </div>
       </div>
-      {contacts.map((contact, index) => (
-        <Contact key={index} src={contact.src} name={contact.name} />
+      <div className="h-screen pb-40 flex-grow overflow-y-auto scrollbar-hide">
+      {realtimeFriends && realtimeFriends.docs.map((friend) => (
+        <Contact key={friend.id} id={friend.id} />
       ))}
+      </div>
+      
     </div>
   )
 }

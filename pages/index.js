@@ -5,7 +5,7 @@ import Login from "../components/Login";
 import Sidebar from "../components/Sidebar";
 import Widgets from "../components/Widgets";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import Loading from "../components/Loading";
 
 export default function Home() {
@@ -25,7 +25,7 @@ export default function Home() {
         <Sidebar />
         <Feed user={user} />
         {/* Widgets */}
-        <Widgets />
+        <Widgets user={user} />
       </main>
     </div>
   );

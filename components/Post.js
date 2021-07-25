@@ -195,70 +195,36 @@ const Post = ({
         </div>
       </div>
       <div className="bg-white rounded-lg border-t relative">
-        {realtimeComments && realtimeComments.docs.length === 0 && (
-          <div className="p-5 h-24 flex-grow overflow-y-auto scrollbar-hide">
-            <ul className="mb-16">
-              {realtimeComments &&
-                realtimeComments.docs.map((comment) => (
-                  <li key={comment.id}>
-                    <div className="flex items-center">
-                      <Avatar src={comment.data().AvatarImage} />
-                      <div className="pl-5 mt-8">
-                        <h4 className="font-bold text-sm">
-                          {comment.data().name}
-                        </h4>
-                        <span>{comment.data().message}</span>
-                      </div>
+        <div className="p-5 h-auto pb-5 flex-grow overflow-y-auto scrollbar-hide">
+          <ul className="mb-16">
+            {realtimeComments &&
+              realtimeComments.docs.map((comment) => (
+                <li key={comment.id}>
+                  <div className="flex items-center">
+                    <Avatar src={comment.data().AvatarImage} />
+                    <div className="pl-5 mt-8">
+                      <h4 className="font-bold text-sm">
+                        {comment.data().name}
+                      </h4>
+                      <span>{comment.data().message}</span>
                     </div>
-                  </li>
-                ))}
-            </ul>
-            <form className="flex items-center absolute w-full bottom-3">
-              <Avatar src={infoUser.AvatarImage} />
-              <input
-                type="text"
-                ref={commentRef}
-                className="bg-gray-300 w-[85%] border-none focus:outline-none px-3 py-3 rounded-xl ml-5"
-                placeholder="Viết bình luận...."
-              />
-              <button hidden type="submit" onClick={addComment}>
-                submit
-              </button>
-            </form>
-          </div>
-        )}
-        {realtimeComments && realtimeComments.docs.length !== 0 && (
-          <div className="p-5 h-64 flex-grow overflow-y-auto scrollbar-hide">
-            <ul className="mb-16">
-              {realtimeComments &&
-                realtimeComments.docs.map((comment) => (
-                  <li key={comment.id}>
-                    <div className="flex items-center">
-                      <Avatar src={comment.data().AvatarImage} />
-                      <div className="pl-5 mt-8">
-                        <h4 className="font-bold text-sm">
-                          {comment.data().name}
-                        </h4>
-                        <span>{comment.data().message}</span>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-            </ul>
-            <form className="flex items-center absolute w-full bottom-3">
-              <Avatar src={infoUser.AvatarImage} />
-              <input
-                type="text"
-                ref={commentRef}
-                className="bg-gray-300 w-[85%] border-none focus:outline-none px-3 py-3 rounded-xl ml-5"
-                placeholder="Viết bình luận...."
-              />
-              <button hidden type="submit" onClick={addComment}>
-                submit
-              </button>
-            </form>
-          </div>
-        )}
+                  </div>
+                </li>
+              ))}
+          </ul>
+          <form className="flex items-center absolute w-full bottom-3">
+            <Avatar src={infoUser.AvatarImage} />
+            <input
+              type="text"
+              ref={commentRef}
+              className="bg-gray-200 w-[85%] border-none focus:outline-none px-3 py-3 rounded-xl ml-5"
+              placeholder="Viết bình luận...."
+            />
+            <button hidden type="submit" onClick={addComment}>
+              submit
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
