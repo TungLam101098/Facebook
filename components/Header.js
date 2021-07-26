@@ -128,6 +128,23 @@ function Header({ user }) {
     getData();
   }, [user]);
 
+  useEffect(() => {
+    const makeFriendYourSelf = async () => {
+      const userRef = db
+        .collection("users")
+        .doc(user.uid)
+        .collection("listfriends")
+        .doc(user.uid);
+      const doc = await userRef.get();
+      if (!doc.exists) {
+        await userRef.set({
+          id: user.uid,
+        });
+      }
+    };
+    makeFriendYourSelf();
+  }, []);
+
   const handleChange = (e) => {
     const userDataInput = e.target.value.toLowerCase();
     setQuery(userDataInput);
@@ -398,19 +415,21 @@ function Header({ user }) {
                         </h4>
                       )}
                       {notification.data()?.type === "addLike" && (
-                        <div onClick={() => {
-                          readNotification(
-                            notification.data()?.id,
-                            notification.id
-                          );
-                        }}>
+                        <div
+                          onClick={() => {
+                            readNotification(
+                              notification.data()?.id,
+                              notification.id
+                            );
+                          }}
+                        >
                           <h4 className="text-base">
                             <span className="font-bold">
                               {notification.data()?.name}
                             </span>{" "}
                             đã thích bài viết của bạn
                           </h4>
-                          {notification.data()?.img!== "notImg" && (
+                          {notification.data()?.img !== "notImg" && (
                             <Image
                               className="cursor-pointer"
                               width={50}
@@ -421,19 +440,21 @@ function Header({ user }) {
                         </div>
                       )}
                       {notification.data()?.type === "addComment" && (
-                        <div onClick={() => {
-                          readNotification(
-                            notification.data()?.id,
-                            notification.id
-                          );
-                        }}>
+                        <div
+                          onClick={() => {
+                            readNotification(
+                              notification.data()?.id,
+                              notification.id
+                            );
+                          }}
+                        >
                           <h4 className="text-base">
                             <span className="font-bold">
                               {notification.data()?.name}
                             </span>{" "}
                             đã bình luận bài viết của bạn
                           </h4>
-                          {notification.data()?.img!== "notImg" && (
+                          {notification.data()?.img !== "notImg" && (
                             <Image
                               className="cursor-pointer"
                               width={50}
@@ -444,18 +465,20 @@ function Header({ user }) {
                         </div>
                       )}
                       {notification.data()?.type === "posts" && (
-                        <div onClick={() => {
-                          readNotification(
-                            notification.data()?.id,
-                            notification.id
-                          );
-                        }}>
+                        <div
+                          onClick={() => {
+                            readNotification(
+                              notification.data()?.id,
+                              notification.id
+                            );
+                          }}
+                        >
                           <h4 className="text-base">
-                          <span className="font-bold">
-                            {notification.data()?.name}
-                          </span>{" "}
-                          đã thêm một bài viết
-                        </h4>
+                            <span className="font-bold">
+                              {notification.data()?.name}
+                            </span>{" "}
+                            đã thêm một bài viết
+                          </h4>
                         </div>
                       )}
                       {notification.data()?.type === "addFriendsComplete" && (

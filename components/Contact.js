@@ -66,7 +66,20 @@ const Contact = ({ id, user }) => {
     e.preventDefault();
     if (!MessageRef.current.value) return;
     setFocused(false);
-    await db
+    if (user.uid === DataOfFriend.idFriend) {
+      await db
+      .collection("users")
+      .doc(user.uid)
+      .collection("chats")
+      .doc(DataOfFriend.idFriend)
+      .collection("messages")
+      .add({
+        id: user.uid,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        message: MessageRef.current.value,
+      });
+    } else {
+      await db
       .collection("users")
       .doc(user.uid)
       .collection("chats")
@@ -89,6 +102,8 @@ const Contact = ({ id, user }) => {
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         message: MessageRef.current.value,
       });
+    }
+    
     MessageRef.current.value = "";
   };
   const scrollToBottom = () => {
@@ -146,7 +161,7 @@ const Contact = ({ id, user }) => {
                 <p>
                   {friend.data().surname} {friend.data().name}{" "}
                 </p>
-                <div className="absolute bottom-2 left-7 bg-green-400 h-3 w-3 rounded-full"></div>
+                <div className="absolute bottom-2 left-7 bg-green-400 h-3 w-3 rounded-full border-white border-2"></div>
               </div>
             )
         )}
@@ -157,7 +172,7 @@ const Contact = ({ id, user }) => {
               <div className="flex justify-center items-center">
                 <div className="relative">
                   <Avatar src={DataOfFriend.img} />
-                  <div className="h-2 w-2 bg-green-400 absolute bottom-2 right-1"></div>
+                  <div className="absolute bottom-0 right-1 bg-green-400 h-3 w-3 rounded-full border-white border-2"></div>
                 </div>
                 <div className="ml-2 relative cursor-pointer">
                   <h4 className="font-bold text-base">
