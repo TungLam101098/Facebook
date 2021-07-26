@@ -20,7 +20,7 @@ const Widgets = ({ user }) => {
       </div>
       <div className="h-screen pb-40 flex-grow overflow-y-auto scrollbar-hide">
       {realtimeFriends && realtimeFriends.docs.map((friend) => (
-        <Contact key={friend.id} id={friend.id} />
+        <Contact key={friend.id} id={friend.id} user={user} />
       ))}
       </div>
       

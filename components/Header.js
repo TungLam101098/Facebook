@@ -161,7 +161,7 @@ function Header({ user }) {
     const snapShot = await listSendFriendsRef.get();
     if (!snapShot.exists) {
       await listSendFriendsRef.set({
-        id: id,
+        id: user.uid,
       });
     }
 
