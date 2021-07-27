@@ -102,7 +102,7 @@ const InputBox = ({ user }) => {
     <div className="bg-white p-2 rounded-2xl shadow-md text-gray-500 font-medium mt-6">
       <div className="flex space-x-4 p-4 items-center">
         <Image
-          className="rounded-full"
+          className="rounded-full hidden sm:block"
           src={infoUser.AvatarImage}
           width={40}
           height={40}
@@ -110,7 +110,7 @@ const InputBox = ({ user }) => {
         />
         <form className="flex flex-1">
           <input
-            className="rounded-full h-12 bg-gray-100 flex-grow px-5 focus:outline-none"
+            className="rounded-full h-12 bg-gray-100 flex-grow px-5 w-full sm:w-auto focus:outline-none"
             type="text"
             ref={inputRef}
             placeholder={` ${infoUser.name} ơi, bạn đang nghĩ gì thế?`}

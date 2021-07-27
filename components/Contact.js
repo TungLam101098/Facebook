@@ -171,7 +171,7 @@ const Contact = ({ id, user }) => {
                   height={50}
                   layout="fixed"
                 />
-                <p>
+                <p className="hidden sm:block">
                   {friend.data().surname} {friend.data().name}{" "}
                 </p>
                 <div className="absolute bottom-2 left-7 bg-green-400 h-3 w-3 rounded-full border-white border-2"></div>
@@ -179,7 +179,7 @@ const Contact = ({ id, user }) => {
             )
         )}
       {styleOfChat && (
-        <div className="h-[455px] w-[338px] fixed bottom-0 right-20 rounded-lg bg-white z-10">
+        <div className="h-[455px] w-[338px] fixed bottom-0 right-2 sm:right-20 rounded-lg bg-white z-10">
           <div className="flex-grow">
             <div className="flex justify-between p-2 items-center shadow-md">
               <div className="flex justify-center items-center">
