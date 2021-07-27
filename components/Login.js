@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { infoUser } from "../redux/features/userSlice";
 import { useRouter } from "next/router";
 import { auth } from "../firebase";
+import emailjs from 'emailjs-com';
 
 const Login = () => {
   const verification = Math.floor(10000 + Math.random() * 90000);
@@ -26,7 +27,7 @@ const Login = () => {
   const FemaleRef = useRef(null);
 
   const LoginSubmit = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     const email = emailLoginRef.current.value;
     const password = passwordLoginRef.current.value;
     try {
@@ -37,7 +38,8 @@ const Login = () => {
     }
   };
 
-  const RegisterSubmit = () => {
+  const RegisterSubmit = (e) => {
+    e.preventDefault();
     if (
       surnameRef.current.value === "" ||
       nameRef.current.value === "" ||
@@ -78,6 +80,21 @@ const Login = () => {
           })
         );
       }
+      emailjs
+        .sendForm(
+          "service_dcsbm1i",
+          "template_zmnuzjk",
+          e.target,
+          "user_FAeCTZsbyipDdR6bK5EiJ"
+        )
+        .then(
+          (result) => {
+            console.log(result.text);
+          },
+          (error) => {
+            console.log(error.text);
+          }
+        );
       router.push("/confirmEmail");
     }
   };
@@ -124,7 +141,7 @@ const Login = () => {
             </h4>
           </div>
           <div>
-            <form className="bg-white p-5 rounded-xl text-center">
+            <div className="bg-white p-5 rounded-xl text-center">
               <input
                 className="style-input w-full"
                 type="email"
@@ -142,7 +159,7 @@ const Login = () => {
               <button
                 className="w-full bg-blue-500 text-white px-5 py-5 my-2 box-border outline-none border-none hover:bg-blue-600 rounded-md text-3xl"
                 onClick={LoginSubmit}
-                type="submit"
+                type="button"
               >
                 Đăng nhập
               </button>
@@ -161,14 +178,15 @@ const Login = () => {
               >
                 Tạo tài khoản mới
               </button>
-            </form>
-            <div
+            </div>
+            <form
               className="modal fade"
               id="exampleModalCenter"
               tabIndex="-1"
               role="dialog"
               aria-labelledby="exampleModalCenterTitle"
               aria-hidden="true"
+              onSubmit={RegisterSubmit}
             >
               <div
                 className="modal-dialog modal-dialog-centered"
@@ -202,11 +220,13 @@ const Login = () => {
                     <input
                       type="text"
                       className="style-input w-6/12"
+                      name="Name"
                       placeholder="Tên"
                       ref={nameRef}
                     />
                     <input
                       type="email"
+                      name="email"
                       className="style-input w-full"
                       placeholder="Email"
                       ref={emailRef}
@@ -217,6 +237,7 @@ const Login = () => {
                       placeholder="Mật khẩu mới"
                       ref={passwordRef}
                     />
+                    <input name="message" defaultValue={verification} hidden />
                     <span className="flex items-center text-gray-500">
                       Ngày sinh <QuestionMarkCircleIcon className="h-7" />{" "}
                     </span>
@@ -260,8 +281,7 @@ const Login = () => {
                   </div>
                   <div className="modal-footer text-center">
                     <button
-                      type="button"
-                      onClick={RegisterSubmit}
+                      type="submit"
                       className="w-2/5 bg-green-400 text-white px-5 py-5 my-2 box-border outline-none border-none hover:bg-green-500 rounded-md text-3xl"
                     >
                       Đăng Ký
@@ -269,7 +289,7 @@ const Login = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </form>
             <span>
               <span>Tạo trang</span>dành cho người nổi tiếng, nhãn hiệu hoặc
               doanh nghiệp.

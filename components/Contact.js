@@ -1,7 +1,7 @@
 import { Avatar } from "@material-ui/core";
 import Image from "next/image";
 import { useCollection } from "react-firebase-hooks/firestore";
-import { db } from "../firebase";
+import { db, firestore } from "../firebase";
 import firebase from "firebase";
 
 import {
@@ -101,6 +101,19 @@ const Contact = ({ id, user }) => {
         id: user.uid,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         message: MessageRef.current.value,
+      });
+    }
+
+    const listChatRef = db
+      .collection("users")
+      .doc(DataOfFriend.idFriend)
+      .collection("chats")
+      .doc(user.uid);
+    const snapShotListChat = await listChatRef.get();
+    if (snapShotListChat.exists) {
+      await listChatRef.set({
+        id: user.uid,
+        seen: false
       });
     }
     

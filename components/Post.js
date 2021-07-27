@@ -19,7 +19,6 @@ const Post = ({
   image,
   postImage,
   message,
-  comments,
   shares,
 }) => {
   const infoUser = useSelector(selectInfo);

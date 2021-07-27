@@ -7,8 +7,9 @@ import { UsersIcon } from "@heroicons/react/solid";
 import { UserRemoveIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "../firebase";
+import { auth, db, storage } from "../firebase";
 import firebase from "firebase";
+import { useCollection } from "react-firebase-hooks/firestore";
 
 function HeaderUser({ userData, id }) {
   const [user] = useAuthState(auth);
@@ -16,6 +17,10 @@ function HeaderUser({ userData, id }) {
   const [sended, setSended] = useState(false);
   const [isFriend, setIsFriend] = useState(false);
   const [dataUser, setDataUser] = useState(null);
+  const [styleOfBackgroundImage, setStyleOfBackgroundImage] = useState(false);
+  const [BackgroundImage, setBackgroundImage] = useState(null);
+  const [realtimeDataUser] = useCollection(db.collection("users"));
+
   useEffect(() => {
     if (!user) {
       return false;
@@ -87,7 +92,8 @@ function HeaderUser({ userData, id }) {
       await db
         .collection("users")
         .doc(id)
-        .collection("listnotification").add({
+        .collection("listnotification")
+        .add({
           id: user.uid,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           type: "addFriends",
@@ -107,6 +113,62 @@ function HeaderUser({ userData, id }) {
           id: user.uid,
         });
       }
+    }
+  };
+
+  const addBackgroundImage = (e) => {
+    const reader = new FileReader();
+    if (e.target.files[0]) {
+      reader.readAsDataURL(e.target.files[0]);
+    }
+    reader.onload = (readEvent) => {
+      setBackgroundImage(readEvent.target.result);
+      setStyleOfBackgroundImage(true);
+    };
+  };
+
+  const cancelBackgroundImage = () => {
+    setBackgroundImage(null);
+    setStyleOfBackgroundImage(false);
+  };
+
+  const completeBackgroundImage = () => {
+    if (BackgroundImage) {
+      const uploadTask = storage
+        .ref(`backgrounds/${user.uid}`)
+        .putString(BackgroundImage, "data_url");
+      uploadTask.on(
+        "state_change",
+        (snapshot) => {
+          var progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case firebase.storage.TaskState.PAUSED:
+              console.log("Upload is paused");
+              break;
+            case firebase.storage.TaskState.RUNNING:
+              console.log("Upload is running");
+              break;
+          }
+        },
+        (error) => console.log(error),
+        () => {
+          storage
+            .ref("backgrounds")
+            .child(user.uid)
+            .getDownloadURL()
+            .then((url) => {
+              db.collection("users").doc(user.uid).set(
+                {
+                  BackgroundImage: url,
+                },
+                { merge: true }
+              );
+            });
+        }
+      );
+      setStyleOfBackgroundImage(false);
     }
   };
 
@@ -134,11 +196,69 @@ function HeaderUser({ userData, id }) {
     <div>
       <div className="">
         <div className="flex justify-center items-center bg-gray-200">
-          <div className="w-full sm:w-4/6 relative">
-            <img
-              className="w-full h-44 sm:h-96 object-cover rounded-lg"
-              src="https://scontent-hkg4-1.xx.fbcdn.net/v/t1.6435-9/101801932_297967541362716_3387244181536636928_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=e3f864&_nc_ohc=bWXeBRk0d40AX_0tyAg&_nc_ht=scontent-hkg4-1.xx&oh=5dc0dc27ea96e21cc92d8658b5043a58&oe=61208F1B"
-            />
+          <div className="w-full sm:w-5/6 relative">
+            <div className="relative">
+              {realtimeDataUser &&
+                realtimeDataUser.docs.map(
+                  (userDataInDoc) =>
+                    userDataInDoc.id === id && !styleOfBackgroundImage &&
+                    userDataInDoc.data().BackgroundImage && (
+                      <img
+                        className="w-full h-44 sm:h-96 object-cover rounded-lg"
+                        src={userDataInDoc.data().BackgroundImage}
+                      />
+                    )
+                )}
+              {realtimeDataUser &&
+                realtimeDataUser.docs.map(
+                  (userDataInDoc) =>
+                    userDataInDoc.id === id && !styleOfBackgroundImage &&
+                    !userDataInDoc.data().BackgroundImage && (
+                      <div className="w-full h-44 sm:h-96 bg-gray-500 object-cover rounded-lg"></div>
+                    )
+                )}
+              {styleOfBackgroundImage && (
+                <img
+                  className="w-full h-44 sm:h-96 object-cover rounded-lg"
+                  src={BackgroundImage}
+                />
+              )}
+
+              {!styleOfBackgroundImage ? (
+                <label className="flex justify-center items-center absolute bottom-5 right-5 cursor-pointer">
+                  <input
+                    onChange={addBackgroundImage}
+                    type="file"
+                    style={{ display: "none" }}
+                  />
+                  <div className="flex rounded-lg border-none bg-gray-200 px-3 py-2">
+                    <CameraIcon className="h-6" /> Chỉnh sửa ảnh bìa
+                  </div>
+                </label>
+              ) : (
+                <div
+                  style={{ backgroundColor: "rgba(52, 52, 52, 0.8)" }}
+                  className="flex bg-black justify-between p-5  w-full h-20 absolute top-0 text-white"
+                >
+                  <span>Ảnh bìa của bạn hiển thị công khai</span>
+                  <div className="space-x-4">
+                    <button
+                      onClick={cancelBackgroundImage}
+                      className="px-4 py-2 bg-gray-400 rounded-lg"
+                    >
+                      Huỷ
+                    </button>
+                    <button
+                      onClick={completeBackgroundImage}
+                      className="px-4 py-2 bg-blue-500 rounded-lg"
+                    >
+                      Lưu thay đổi
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="flex justify-center absolute top-32 left-[30%] sm:left-[42%] sm:top-80">
               <div className="relative">
                 <img
@@ -201,7 +321,7 @@ function HeaderUser({ userData, id }) {
                       <PlusCircleIcon className="h-4 pr-2" /> Thêm vào tin
                     </button>
                   )}
-                  {isFriend && (
+                  {isFriend && !itIsMe && (
                     <button className="flex items-center">
                       <UsersIcon className="h-4 pr-2" /> Bạn bè
                     </button>
