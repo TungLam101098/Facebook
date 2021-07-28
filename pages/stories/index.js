@@ -8,9 +8,11 @@ import Image from "next/image";
 import { db, storage } from "../../firebase";
 import firebase from "firebase";
 import { useRouter } from "next/router";
+import { useCollection } from "react-firebase-hooks/firestore";
 
 function Stories({ uid }) {
   const infoUser = useSelector(selectInfo);
+  const [realtimeUser] = useCollection(db.collection("users"));
   const [isAddImg, setIsAddImg] = useState(false);
   const [imageStory, setImageStory] = useState(null);
   const router = useRouter();
@@ -71,37 +73,44 @@ function Stories({ uid }) {
   };
   return (
     <div className="flex">
-      <div style={{ flex: 0.3 }} className=" h-screen w-full relative">
-        <Link href="/">
-          <div className="p-3 cursor-pointer">
-            <XCircleIcon className="h-14 text-gray-400" />
-          </div>
-        </Link>
+      {realtimeUser &&
+        realtimeUser.docs.map(
+          (dataUser) =>
+            dataUser.id === uid && (
+              <div style={{ flex: 0.3 }} className=" h-screen w-full relative">
+                <Link href="/">
+                  <div className="p-3 cursor-pointer">
+                    <XCircleIcon className="h-14 text-gray-400" />
+                  </div>
+                </Link>
 
-        <hr className="text-gray-300" />
-        <div className="pt-5 p-5">
-          <div className="flex-grow">
-            <h4 className="font-bold text-2xl">Tin của bạn</h4>
-            <div className="flex space-x-4  items-center pt-4">
-              <Avatar src={infoUser.AvatarImage} />
-              <span className="text-lg">
-                {infoUser.surname.concat(" ", infoUser.name)}
-              </span>
-            </div>
-          </div>
-        </div>
-        <hr className="text-gray-300" />
-        {isAddImg && (
-          <div>
-            <button
-              onClick={() => addStory()}
-              className="p-2 px-4 py-2 border-none bg-blue-500 text-white rounded-md absolute bottom-2 right-2 "
-            >
-              Chia sẻ lên tin
-            </button>
-          </div>
+                <hr className="text-gray-300" />
+                <div className="pt-5 p-5">
+                  <div className="flex-grow">
+                    <h4 className="font-bold text-2xl">Tin của bạn</h4>
+                    <div className="flex space-x-4  items-center pt-4">
+                      <Avatar src={dataUser.data().AvatarImage} />
+                      <span className="text-lg">
+                        {dataUser.data().surname.concat(" ", dataUser.data().name)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <hr className="text-gray-300" />
+                {isAddImg && (
+                  <div>
+                    <button
+                      onClick={() => addStory()}
+                      className="p-2 px-4 py-2 border-none bg-blue-500 text-white rounded-md absolute bottom-2 right-2 "
+                    >
+                      Chia sẻ lên tin
+                    </button>
+                  </div>
+                )}
+              </div>
+            )
         )}
-      </div>
+
       <div
         style={{ flex: 0.7 }}
         className=" bg-gray-200 h-screen w-full flex justify-center items-center relative "
