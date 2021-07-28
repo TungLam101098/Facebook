@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../firebase";
 
-function Messager({ img, id, user }) {
+function Message({ img, id, user }) {
   const messagesRef = useRef(null);
   const [realtimeMessages] = useCollection(
     db
@@ -55,4 +55,4 @@ function Messager({ img, id, user }) {
   );
 }
 
-export default Messager;
+export default Message;

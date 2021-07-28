@@ -25,18 +25,48 @@ import { useRouter } from "next/router";
 import firebase from "firebase";
 import TimeAgo from "timeago-react";
 import { useCollection } from "react-firebase-hooks/firestore";
+import MessageBox from "./MessageBox";
+import MessageUser from "./MessageUser";
+import { useSelector } from "react-redux";
+import { selectFriendId } from "../redux/features/friendSlice";
 
 function Header({ user }) {
   const router = useRouter();
   const [userData, setUserData] = useState(null);
   const [style, setStyle] = useState(false);
   const [styleOfNotification, setStyleOfNotification] = useState(false);
+  const [styleOfMessage, setStyleOfMessage] = useState(false);
+  const [styleOfMessageUser, setStyleOfMessageUser] = useState(false);
   const [focused, setFocused] = useState(false);
   const dispatch = useDispatch();
   const [usersData, setUsersData] = useState([]);
   const [usersDataSearch, setUsersDataSearch] = useState([]);
   const [query, setQuery] = useState("");
-  const [lengthOfNotification, setlengthOfNotification] = useState(0);
+  const [lengthOfNotification, setLengthOfNotification] = useState(0);
+  const [lengthOfMessage, setLengthOfMessage] = useState(0);
+  const [DataOfFriend, setDataOfFriend] = useState(null);
+  const roomId = useSelector(selectFriendId);
+  const [styleOfChat, setStyleOfChat] = useState(false);
+  const [styleOfIconChat, setStyleOfIconChat] = useState(false);
+
+  useEffect(() => {
+    if (!roomId) return;
+    const getDataOfFriend = async () => {
+      
+      const friendRef = db.collection("users").doc(roomId);
+      const doc = await friendRef.get();
+      if (!doc.exists) {
+        console.log("No such document!");
+      } else {
+        setDataOfFriend({
+          idFriend: doc.id,
+          img: doc.data().AvatarImage,
+          fullName: (doc.data().surname).concat(" ", doc.data().name),
+        });
+      }
+    };
+    getDataOfFriend();
+  }, [roomId]);
 
   const [realtimeNotification] = useCollection(
     db
@@ -44,6 +74,9 @@ function Header({ user }) {
       .doc(user.uid)
       .collection("listnotification")
       .orderBy("timestamp", "desc")
+  );
+  const [realtimeChats] = useCollection(
+    db.collection("users").doc(user.uid).collection("chats")
   );
 
   useEffect(() => {
@@ -56,8 +89,21 @@ function Header({ user }) {
         count++;
       }
     });
-    setlengthOfNotification(count);
+    setLengthOfNotification(count);
   }, [realtimeNotification]);
+
+  useEffect(() => {
+    let countMessage = 0;
+    if (!realtimeChats) {
+      return;
+    }
+    realtimeChats.docs.map((doc) => {
+      if (!doc.data().seen) {
+        countMessage++;
+      }
+    });
+    setLengthOfMessage(countMessage);
+  }, [realtimeChats]);
 
   useEffect(() => {
     const getDataFromFirebase = async () => {
@@ -105,6 +151,21 @@ function Header({ user }) {
       })
     );
   };
+
+  const turnOnChat = () => {
+    setStyleOfChat(true);
+    setStyleOfIconChat(false);
+  };
+
+  const turnOffChat = () => {
+    setStyleOfChat(false);
+    setStyleOfIconChat(true);
+  };
+
+  const closeChat = () => {
+    setStyleOfChat(false);
+  };
+
   useEffect(() => {
     const getData = async () => {
       const userRef = db.collection("users").doc(user.uid);
@@ -260,7 +321,7 @@ function Header({ user }) {
 
   if (!userData) return null;
   return (
-    <div className="sticky top-0 z-50 bg-white flex items-center p-2 lg:px-5 shadow-md relative">
+    <div className="sticky top-0 z-50 bg-white flex items-center p-2 lg:px-5 shadow-md">
       {/* Left */}
       <div
         className={` ${
@@ -277,7 +338,7 @@ function Header({ user }) {
         </Link>
       </div>
       <div className="flex ml-2 items-center rounded-full bg-gray-100 p-2">
-        <SearchIcon className="h-6 text-gray-600" />
+        <SearchIcon className="h-6 text-gray-600 cursor-pointer" onClick={onFocus} />
         <input
           className="hidden md:inline-flex ml-2 items-center bg-transparent outline-none placeholder-gray-500 flex-shrink"
           type="text"
@@ -343,10 +404,19 @@ function Header({ user }) {
           {userData?.name}
         </p>
         <ViewGridIcon className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300" />
-        <ChatIcon className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300" />
+        <ChatIcon
+          onClick={() => {
+            setStyle(false);
+            setStyleOfNotification(false);
+            setStyleOfMessage(!styleOfMessage);
+            setStyleOfChat(false);
+          }}
+          className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300"
+        />
         <BellIcon
           onClick={() => {
             setStyle(false);
+            setStyleOfMessage(false);
             setStyleOfNotification(!styleOfNotification);
           }}
           className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300"
@@ -356,14 +426,36 @@ function Header({ user }) {
             <span>{lengthOfNotification}</span>
           </div>
         )}
+        {lengthOfMessage !== 0 && (
+          <div className="w-5 h-5 bg-red-500 flex justify-center rounded-full text-white items-center absolute right-[32%] top-[-10%]">
+            <span>{lengthOfMessage}</span>
+          </div>
+        )}
 
         <ChevronDownIcon
           onClick={() => {
             setStyleOfNotification(false);
+            setStyleOfMessage(false);
             setStyle(!style);
           }}
           className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300"
         />
+        {styleOfMessage && realtimeChats && (
+          <div className="rounded-md bg-white w-96 shadow-md p-6 absolute right-0 top-full flex-grow h-80 overflow-y-auto scrollbar-hide">
+            <h4 className="font-bold text-2xl">Messenger</h4>
+            {realtimeChats.docs.map((chat) => (
+              <MessageBox
+                key={chat.id}
+                id={chat.id}
+                seen={chat.data().seen}
+                user={user}
+                setStyleOfMessage={setStyleOfMessage}
+                setStyleOfMessageUser={setStyleOfMessageUser}
+                setStyleOfChat={setStyleOfChat}
+              />
+            ))}
+          </div>
+        )}
         {style && (
           <div className="rounded-md bg-white w-96 shadow-md p-6 absolute right-0 top-full">
             <div
@@ -395,6 +487,7 @@ function Header({ user }) {
         )}
         {styleOfNotification && realtimeNotification && (
           <div className="rounded-md bg-white w-96 shadow-md p-6 absolute right-0 top-full flex-grow h-80 overflow-y-auto scrollbar-hide">
+            <h4 className="font-bold text-2xl">Thông báo</h4>
             <ul>
               {realtimeNotification.docs.map((notification) => (
                 <li key={notification.id}>
@@ -545,6 +638,15 @@ function Header({ user }) {
           </div>
         )}
       </div>
+      {DataOfFriend && styleOfMessageUser && styleOfChat && <MessageUser turnOffChat={turnOffChat} closeChat={closeChat} DataOfFriend={DataOfFriend} user={user} />}
+      {DataOfFriend && styleOfIconChat && (
+        <div
+        onClick={() => turnOnChat()}
+          className="fixed bottom-7 sm:right-6 z-10 cursor-pointer"
+        >
+          <Avatar src={DataOfFriend.img} />
+        </div>
+      )}
     </div>
   );
 }

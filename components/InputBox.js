@@ -1,7 +1,7 @@
 // import { useSession } from "next-auth/client";
 import Image from "next/image";
 import { EmojiHappyIcon } from "@heroicons/react/outline";
-import { CameraIcon, VideoCameraIcon } from "@heroicons/react/solid";
+import { CameraIcon, VideoCameraIcon, PaperAirplaneIcon } from "@heroicons/react/solid";
 import { useRef, useState } from "react";
 import { db, storage } from "../firebase";
 import firebase from "firebase";
@@ -115,8 +115,8 @@ const InputBox = ({ user }) => {
             ref={inputRef}
             placeholder={` ${infoUser.name} ơi, bạn đang nghĩ gì thế?`}
           />
-          <button hidden type="submit" onClick={sendPost}>
-            Submit
+          <button className="block sm:hidden text-blue-500" type="submit" onClick={sendPost}>
+            <PaperAirplaneIcon className="h-8" /> 
           </button>
         </form>
         {imageToPost && (

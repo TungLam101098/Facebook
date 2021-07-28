@@ -201,7 +201,8 @@ function HeaderUser({ userData, id }) {
               {realtimeDataUser &&
                 realtimeDataUser.docs.map(
                   (userDataInDoc) =>
-                    userDataInDoc.id === id && !styleOfBackgroundImage &&
+                    userDataInDoc.id === id &&
+                    !styleOfBackgroundImage &&
                     userDataInDoc.data().BackgroundImage && (
                       <img
                         className="w-full h-44 sm:h-96 object-cover rounded-lg"
@@ -212,7 +213,8 @@ function HeaderUser({ userData, id }) {
               {realtimeDataUser &&
                 realtimeDataUser.docs.map(
                   (userDataInDoc) =>
-                    userDataInDoc.id === id && !styleOfBackgroundImage &&
+                    userDataInDoc.id === id &&
+                    !styleOfBackgroundImage &&
                     !userDataInDoc.data().BackgroundImage && (
                       <div className="w-full h-44 sm:h-96 bg-gray-500 object-cover rounded-lg"></div>
                     )
@@ -225,16 +227,18 @@ function HeaderUser({ userData, id }) {
               )}
 
               {!styleOfBackgroundImage ? (
-                <label className="flex justify-center items-center absolute bottom-5 right-5 cursor-pointer">
-                  <input
-                    onChange={addBackgroundImage}
-                    type="file"
-                    style={{ display: "none" }}
-                  />
-                  <div className="flex rounded-lg border-none bg-gray-200 px-3 py-2">
-                    <CameraIcon className="h-6" /> Chỉnh sửa ảnh bìa
-                  </div>
-                </label>
+                itIsMe && (
+                  <label className="flex justify-center items-center absolute bottom-5 right-5 cursor-pointer">
+                    <input
+                      onChange={addBackgroundImage}
+                      type="file"
+                      style={{ display: "none" }}
+                    />
+                    <div className="flex rounded-lg border-none bg-gray-200 px-3 py-2">
+                      <CameraIcon className="h-6" /> Chỉnh sửa ảnh bìa
+                    </div>
+                  </label>
+                )
               ) : (
                 <div
                   style={{ backgroundColor: "rgba(52, 52, 52, 0.8)" }}
