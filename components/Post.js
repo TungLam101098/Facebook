@@ -152,6 +152,11 @@ const Post = ({
           <ThumbUpIconSolid className="h-5 text-blue-600" />
           {realtimeLike && realtimeLike.docs[0] && (
             <span>
+              {realtimeLike.docs[0].data().name}
+            </span>
+          )}
+          {realtimeLike && realtimeLike.docs[0] && realtimeLike.docs[1]  && (
+            <span>
               {realtimeLike.docs[0].data().name} và{" "}
               {realtimeLike.docs.length - 1} người khác
             </span>
@@ -216,7 +221,7 @@ const Post = ({
             <input
               type="text"
               ref={commentRef}
-              className="bg-gray-200 w-[85%] border-none focus:outline-none px-3 py-3 rounded-xl ml-5"
+              className="bg-gray-200 w-[70%] sm:w-[85%] border-none focus:outline-none px-3 py-3 rounded-xl ml-5"
               placeholder="Viết bình luận...."
             />
             <button hidden type="submit" onClick={addComment}>

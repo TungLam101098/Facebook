@@ -9,7 +9,7 @@ module.exports = {
       "upload.wikimedia.org",
       "compassionate-leakey-e9b16b.netlify.app",
       "platform-lookaside.fbsbx.com",
-      "firebasestorage.googleapis.com"
-    ]
-  }
-}
+      "firebasestorage.googleapis.com",
+    ],
+  },
+};

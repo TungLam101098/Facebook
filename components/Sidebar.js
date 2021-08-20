@@ -17,7 +17,7 @@ const Sidebar = () => {
   const infoUser = useSelector(selectInfo);
   if(!infoUser.AvatarImage) return null;
   return (
-    <div className="p-2 mt-2 sm:mt-5 max-w-[600px] xl:min-w-[300px]">
+    <div className="p-2 mt-2 sm:block hidden sm:mt-5 max-w-[600px] xl:min-w-[300px]">
       <SidebarRow src={infoUser.AvatarImage} title={infoUser.name} />
       <SidebarRow Icon={UsersIcon} title="Bạn bè" />
       <SidebarRow Icon={UserGroupIcon} title="Nhóm" />

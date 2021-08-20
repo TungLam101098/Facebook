@@ -10,7 +10,6 @@ import { selectInfo } from "../redux/features/userSlice";
 import { useCollection } from "react-firebase-hooks/firestore";
 
 const InputBox = ({ user }) => {
-  // const [session] = useSession();
   const infoUser = useSelector(selectInfo);
   const inputRef = useRef(null);
   const filepickerRef = useRef(null);

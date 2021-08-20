@@ -321,7 +321,7 @@ function Header({ user }) {
 
   if (!userData) return null;
   return (
-    <div className="sticky top-0 z-50 bg-white flex items-center p-2 lg:px-5 shadow-md">
+    <div className="sticky top-0 z-50 bg-white flex items-center justify-between p-2 lg:px-5 shadow-md">
       {/* Left */}
       <div
         className={` ${
@@ -340,7 +340,7 @@ function Header({ user }) {
       <div className="flex ml-2 items-center rounded-full bg-gray-100 p-2">
         <SearchIcon className="h-6 text-gray-600 cursor-pointer" onClick={onFocus} />
         <input
-          className="hidden md:inline-flex ml-2 items-center bg-transparent outline-none placeholder-gray-500 flex-shrink"
+          className="inline-flex w-full sm:w[80%] ml-2 items-center bg-transparent outline-none placeholder-gray-500 flex-shrink"
           type="text"
           value={query}
           onFocus={onFocus}
@@ -350,11 +350,11 @@ function Header({ user }) {
         />
       </div>
       {focused && (
-        <div className="absolute w-1/5 top-full left-0 bg-white p-5">
+        <div className="absolute w-full lg:w-1/5 sm:w-[50%] top-full left-0 bg-white p-5">
           <div className="flex justify-between items-center">
             <h4 className="font-bold text-lg">Tìm kiếm gần đây</h4>
-            <span className="text-blue-500 hover:bg-gray-200 cursor-pointer">
-              Chỉnh sửa
+            <span className="text-blue-500 hover:bg-gray-200 cursor-pointer" onClick={onBlur}>
+              X
             </span>
           </div>
           <ul>
@@ -375,7 +375,7 @@ function Header({ user }) {
         </div>
       )}
       {/* Center */}
-      <div className="flex justify-center flex-grow">
+      <div className="hidden lg:flex justify-center flex-grow">
         <div className="flex space-x-6 md:space-x-2">
           <HeaderIcon active Icon={HomeIcon} />
           <HeaderIcon Icon={FlagIcon} />
@@ -390,7 +390,7 @@ function Header({ user }) {
         {/* Profile pic */}
 
         <Image
-          className="rounded-full cursor-pointer"
+          className=" rounded-full cursor-pointer"
           onClick={() => searchUser(user.uid)}
           src={userData?.AvatarImage}
           width={40}
@@ -411,7 +411,7 @@ function Header({ user }) {
             setStyleOfMessage(!styleOfMessage);
             setStyleOfChat(false);
           }}
-          className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300"
+          className="inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300 "
         />
         <BellIcon
           onClick={() => {
@@ -419,15 +419,15 @@ function Header({ user }) {
             setStyleOfMessage(false);
             setStyleOfNotification(!styleOfNotification);
           }}
-          className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300"
+          className="inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300"
         />
         {lengthOfNotification !== 0 && (
-          <div className="w-5 h-5 bg-red-500 flex justify-center rounded-full text-white items-center absolute right-[15%] top-[-10%]">
+          <div className="w-5 h-5 bg-red-500 flex justify-center rounded-full text-white items-center absolute right-[21%] sm:right-[15%] top-[-10%]">
             <span>{lengthOfNotification}</span>
           </div>
         )}
         {lengthOfMessage !== 0 && (
-          <div className="w-5 h-5 bg-red-500 flex justify-center rounded-full text-white items-center absolute right-[32%] top-[-10%]">
+          <div className="w-5 h-5 bg-red-500 flex justify-center rounded-full text-white items-center absolute right-[46%] sm:right-[32%] top-[-10%]">
             <span>{lengthOfMessage}</span>
           </div>
         )}
@@ -438,10 +438,10 @@ function Header({ user }) {
             setStyleOfMessage(false);
             setStyle(!style);
           }}
-          className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300"
+          className="inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300"
         />
         {styleOfMessage && realtimeChats && (
-          <div className="rounded-md bg-white w-96 shadow-md p-6 absolute right-0 top-full flex-grow h-80 overflow-y-auto scrollbar-hide">
+          <div className="rounded-md bg-white w-96 shadow-md p-6 absolute right-0 top-full flex-grow h-80 overflow-y-auto scrollbar-hide z-10">
             <h4 className="font-bold text-2xl">Messenger</h4>
             {realtimeChats.docs.map((chat) => (
               <MessageBox
@@ -457,7 +457,7 @@ function Header({ user }) {
           </div>
         )}
         {style && (
-          <div className="rounded-md bg-white w-96 shadow-md p-6 absolute right-0 top-full">
+          <div className="rounded-md bg-white w-96 shadow-md p-6 absolute right-0 top-full z-10">
             <div
               onClick={() => searchUser(user.uid)}
               className="flex items-center hover:bg-gray-300 cursor-pointer p-2 mb-4 rounded-md"
@@ -486,7 +486,7 @@ function Header({ user }) {
           </div>
         )}
         {styleOfNotification && realtimeNotification && (
-          <div className="rounded-md bg-white w-96 shadow-md p-6 absolute right-0 top-full flex-grow h-80 overflow-y-auto scrollbar-hide">
+          <div className="rounded-md bg-white w-96 shadow-md p-6 absolute right-0 top-full flex-grow h-80 overflow-y-auto scrollbar-hide z-10">
             <h4 className="font-bold text-2xl">Thông báo</h4>
             <ul>
               {realtimeNotification.docs.map((notification) => (
