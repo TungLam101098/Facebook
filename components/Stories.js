@@ -26,7 +26,7 @@ const Stories = ({ user }) => {
   ];
 
   return (
-    <div className="flex justify-start space-x-3 mx-auto">
+    <div className="flex justify-center space-x-3 mx-auto">
       {realtimeUser &&
         realtimeUser.docs.map(
           (dataUser) =>
@@ -39,7 +39,7 @@ const Stories = ({ user }) => {
                 }}
                 onClick={() => addStory(dataUser.id)}
                 className="relative h-56 w-32 cursor-pointer overflow-x 
-    transition duration-200 transform ease-in hover:scale-105 hover:animate-pulse shadow-xl
+    transition duration-200 transform ease-in hover:scale-105 hover:animate-pulse shadow-xl ml-10 sm:ml-0
     "
               >
                 <Image
