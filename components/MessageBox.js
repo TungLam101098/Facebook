@@ -72,7 +72,7 @@ function MessageBox({
                     }}
                     className="overflow-hidden overflow-ellipsis"
                   >
-                    {realtimeMessages &&
+                    {realtimeMessages && realtimeMessages.docs[0] &&
                       realtimeMessages.docs[0].data().message}
                   </span>
                 </div>

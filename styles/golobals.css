@@ -9,4 +9,5 @@
   .style-input {
     @apply px-5 py-5 text-3xl my-2 box-border outline-none border-2 border-solid border-[#dddfe2] focus:border-blue-500 rounded-md;
   }
+  
 }

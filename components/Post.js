@@ -127,7 +127,13 @@ const Post = ({
     <div className="flex flex-col">
       <div className="p-5 bg-white mt-5 rounded-t-2xl shadow-sm">
         <div className="flex items-center space-x-2">
-          <img className="rounded-full" src={image} width={40} height={40} />
+          <Image
+            className=" rounded-full cursor-pointer"
+            src={image}
+            width={40}
+            height={40}
+            layout="fixed"
+          />
           <div>
             <p className="font-medium">{name}</p>
             {timestamp ? (
@@ -151,11 +157,9 @@ const Post = ({
         <div className="flex justify-center space-x-1 cursor-pointer p-2 rounded-none ml-4">
           <ThumbUpIconSolid className="h-5 text-blue-600" />
           {realtimeLike && realtimeLike.docs[0] && (
-            <span>
-              {realtimeLike.docs[0].data().name}
-            </span>
+            <span>{realtimeLike.docs[0].data().name}</span>
           )}
-          {realtimeLike && realtimeLike.docs[0] && realtimeLike.docs[1]  && (
+          {realtimeLike && realtimeLike.docs[0] && realtimeLike.docs[1] && (
             <span>
               {realtimeLike.docs[0].data().name} và{" "}
               {realtimeLike.docs.length - 1} người khác

@@ -228,13 +228,13 @@ function HeaderUser({ userData, id }) {
 
               {!styleOfBackgroundImage ? (
                 itIsMe && (
-                  <label className="flex justify-center items-center absolute bottom-5 right-5 cursor-pointer">
+                  <label className="flex justify-center items-center absolute bottom-5 right-[-20px] sm:right-5 cursor-pointer">
                     <input
                       onChange={addBackgroundImage}
                       type="file"
                       style={{ display: "none" }}
                     />
-                    <div className="flex rounded-lg border-none bg-gray-200 px-3 py-2">
+                    <div className="flex rounded-lg border-none bg-gray-200 px-3 py-2 transform scale-50 sm:scale-100">
                       <CameraIcon className="h-6" /> Chỉnh sửa ảnh bìa
                     </div>
                   </label>
@@ -302,7 +302,7 @@ function HeaderUser({ userData, id }) {
                   Video
                 </li>
               </ul>
-              <ul className="flex  w-1/3 justify-between">
+              <ul className=" hidden sm:flex  w-1/3 justify-between">
                 <li className="font-bold bg-blue-500 hover:bg-blue-600 rounded-md cursor-pointer p-3 text-white">
                   {!sended && !itIsMe && !isFriend && (
                     <button
