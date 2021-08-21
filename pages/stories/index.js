@@ -72,12 +72,12 @@ function Stories({ uid }) {
     }
   };
   return (
-    <div className="flex">
+    <div className="block sm:flex">
       {realtimeUser &&
         realtimeUser.docs.map(
           (dataUser) =>
             dataUser.id === uid && (
-              <div style={{ flex: 0.3 }} className=" h-screen w-full relative">
+              <div style={{ flex: 0.3 }} className="h-auto sm:h-screen w-full relative">
                 <Link href="/">
                   <div className="p-3 cursor-pointer">
                     <XCircleIcon className="h-14 text-gray-400" />
@@ -116,7 +116,7 @@ function Stories({ uid }) {
         className=" bg-gray-200 h-screen w-full flex justify-center items-center relative "
       >
         {!isAddImg && (
-          <label className="w-2/6 h-4/6 bg-blue-500 flex justify-center items-center cursor-pointer rounded-xl">
+          <label className="w-60 sm:w-2/6 h-96 sm:h-4/6 bg-blue-500 flex justify-center items-center cursor-pointer rounded-xl">
             <input
               type="file"
               onChange={addImageToStories}
@@ -133,19 +133,19 @@ function Stories({ uid }) {
           </label>
         )}
         {isAddImg && (
-          <div className="w-11/12 h-5/6 bg-white absolute bottom-10 right-12 rounded-xl">
+          <div className="w-11/12 h-5/6 bg-white block sm:absolute sm:bottom-10 sm:right-12 rounded-xl">
             <div className="p-3">
               <h4 className="font-bold">Xem trước</h4>
             </div>
 
             <div className="flex h-5/6 justify-center bg-black items-center ">
               <div
-                className="relative h-14 w-14 md:h-52 md:w-32 lg:h-96 lg:w-60 cursor-pointer overflow-x p-3
+                className="relative h-96 w-60 cursor-pointer overflow-x p-3
     transition duration-200 transform ease-in hover:scale-105 hover:animate-pulse
     "
               >
                 <Image
-                  className="object-cover filter brightness-75 rounded-full md:rounded-3xl lg:rounded-3xl"
+                  className="object-cover filter brightness-75 rounded-3xl"
                   src={imageStory}
                   layout="fill"
                 />
