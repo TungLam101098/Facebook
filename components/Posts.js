@@ -17,7 +17,7 @@ const Posts = ({ idUser, uid }) => {
   if (!realtimePosts) return null;
 
   return (
-    <div>
+    <div className="overflow-x-hidden">
       {realtimePosts &&
         realtimePosts.docs.map((post) => (
           <Post

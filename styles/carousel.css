@@ -1,3 +1,10 @@
+
+@media screen and (max-width: 567px) {
+  .rec.rec-arrow {
+    display: none;
+    visibility: hidden;
+  }
+}
 button.rec-dot{
   display: none;
 }
