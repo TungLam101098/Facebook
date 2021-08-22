@@ -14,6 +14,14 @@ function Call({ friendId }) {
 
   const [userData, setUserData] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [notificationCall, setNotificationCall] = useState({
+    text: "Từ chối",
+    status: false,
+  });
+  const [createCallText, setCreateCallText] = useState({
+    text: "Tạo cuộc gọi",
+    status: false,
+  });
 
   const [user] = useAuthState(auth);
 
@@ -62,100 +70,124 @@ function Call({ friendId }) {
   };
 
   const callButton = async () => {
-    if (userData) {
-      defaultSrcObject();
-      const callDoc = db
-        .collection("users")
-        .doc(friendId)
-        .collection("calls")
-        .doc();
-      const offerCandidates = callDoc.collection("offerCandidates");
-      const answerCandidates = callDoc.collection("answerCandidates");
+    if (!createCallText.status) {
+      if (userData) {
+        setCreateCallText({
+          text: "Đang kết nối...",
+          status: false,
+        });
+        defaultSrcObject();
+        const callDoc = db
+          .collection("users")
+          .doc(friendId)
+          .collection("calls")
+          .doc();
+        const offerCandidates = callDoc.collection("offerCandidates");
+        const answerCandidates = callDoc.collection("answerCandidates");
 
-      pc.onicecandidate = (event) => {
-        event.candidate && offerCandidates.add(event.candidate.toJSON());
-      };
-      const offerDescription = await pc.createOffer();
-      await pc.setLocalDescription(offerDescription);
+        pc.onicecandidate = (event) => {
+          event.candidate && offerCandidates.add(event.candidate.toJSON());
+        };
+        const offerDescription = await pc.createOffer();
+        await pc.setLocalDescription(offerDescription);
 
-      const offer = {
-        sdp: offerDescription.sdp,
-        type: offerDescription.type,
-      };
+        const offer = {
+          sdp: offerDescription.sdp,
+          type: offerDescription.type,
+        };
 
-      await callDoc.set({
-        offer,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        name: userData.surname.concat(" ", userData.name),
-        image: userData.AvatarImage,
-      });
+        await callDoc.set({
+          offer,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          name: userData.surname.concat(" ", userData.name),
+          image: userData.AvatarImage,
+        });
 
-      callDoc.onSnapshot((snapshot) => {
-        const data = snapshot.data();
-        if (!pc.currentRemoteDescription && data?.answer) {
-          try {
-            const answerDescription = new RTCSessionDescription(data.answer);
-            pc.setRemoteDescription(answerDescription);
-          } catch (error) {
-            alert("Cuộc gọi đã bị từ chối!!!");
-          }
-        }
-      });
-
-      answerCandidates.onSnapshot((snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === "added") {
-            const candidate = new RTCIceCandidate(change.doc.data());
-            pc.addIceCandidate(candidate);
+        callDoc.onSnapshot((snapshot) => {
+          const data = snapshot.data();
+          if (!pc.currentRemoteDescription && data?.answer) {
+            try {
+              setCreateCallText({
+                text: "kết nối thành công",
+                status: false,
+              });
+              const answerDescription = new RTCSessionDescription(data.answer);
+              pc.setRemoteDescription(answerDescription);
+            } catch (error) {
+              setCreateCallText({
+                text: "Cuộc gọi bị từ chối",
+                status: true,
+              });
+            }
           }
         });
-      });
+
+        answerCandidates.onSnapshot((snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === "added") {
+              const candidate = new RTCIceCandidate(change.doc.data());
+              pc.addIceCandidate(candidate);
+            }
+          });
+        });
+      }
+    } else {
+      window.close();
     }
   };
 
   const answerButton = async (data) => {
-    defaultSrcObject();
-    if (userId) {
-      const callId = data.docs[0].id;
-      const callDoc = db
-        .collection("users")
-        .doc(userId)
-        .collection("calls")
-        .doc(callId);
-      const answerCandidates = callDoc.collection("answerCandidates");
-      const offerCandidates = callDoc.collection("offerCandidates");
-
-      pc.onicecandidate = (event) => {
-        event.candidate && answerCandidates.add(event.candidate.toJSON());
-      };
-
-      const callData = (await callDoc.get()).data();
-
-      const offerDescription = callData.offer;
-      await pc.setRemoteDescription(
-        new RTCSessionDescription(offerDescription)
-      );
-
-      const answerDescription = await pc.createAnswer();
-      await pc.setLocalDescription(answerDescription);
-
-      const answer = {
-        type: answerDescription.type,
-        sdp: answerDescription.sdp,
-      };
-
-      await callDoc.update({ answer });
-
-      offerCandidates.onSnapshot((snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          console.log(change);
-          if (change.type === "added") {
-            let data = change.doc.data();
-            pc.addIceCandidate(new RTCIceCandidate(data));
-          }
-        });
+    if (!notificationCall.status) {
+      setNotificationCall({
+        text: "Kết thúc cuộc gọi",
+        status: true,
       });
+      defaultSrcObject();
+      if (userId) {
+        const callId = data.docs[0].id;
+        const callDoc = db
+          .collection("users")
+          .doc(userId)
+          .collection("calls")
+          .doc(callId);
+        const answerCandidates = callDoc.collection("answerCandidates");
+        const offerCandidates = callDoc.collection("offerCandidates");
+  
+        pc.onicecandidate = (event) => {
+          event.candidate && answerCandidates.add(event.candidate.toJSON());
+        };
+  
+        const callData = (await callDoc.get()).data();
+  
+        const offerDescription = callData.offer;
+        await pc.setRemoteDescription(
+          new RTCSessionDescription(offerDescription)
+        );
+  
+        const answerDescription = await pc.createAnswer();
+        await pc.setLocalDescription(answerDescription);
+  
+        const answer = {
+          type: answerDescription.type,
+          sdp: answerDescription.sdp,
+        };
+  
+        await callDoc.update({ answer });
+  
+        offerCandidates.onSnapshot((snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            console.log(change);
+            if (change.type === "added") {
+              let data = change.doc.data();
+              pc.addIceCandidate(new RTCIceCandidate(data));
+            }
+          });
+        });
+      }
+    } else {
+      window.close();
     }
+    
   };
 
   const refuseButton = async (data) => {
@@ -173,6 +205,7 @@ function Call({ friendId }) {
       };
 
       await callDoc.update({ answer });
+      window.close();
     }
   };
 
@@ -184,7 +217,7 @@ function Call({ friendId }) {
             onClick={callButton}
             className="bg-blue-500 text-[white] px-3 py-2 rounded-md "
           >
-            Tạo cuộc gọi
+            {createCallText.text}
           </button>
         )}
         {userId && userId === friendId && (
@@ -197,7 +230,7 @@ function Call({ friendId }) {
             </button>
             <button className="bg-red-300 text-[white] px-3 py-2 rounded-md ">
               <AgreeCall userId={userId} refuseButton={refuseButton}>
-                Từ chối
+                {notificationCall.text}
               </AgreeCall>
             </button>
           </div>

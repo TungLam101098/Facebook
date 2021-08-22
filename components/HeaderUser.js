@@ -10,6 +10,8 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db, storage } from "../firebase";
 import firebase from "firebase";
 import { useCollection } from "react-firebase-hooks/firestore";
+import { Avatar } from "@material-ui/core";
+import MessageUser from "./MessageUser";
 
 function HeaderUser({ userData, id }) {
   const [user] = useAuthState(auth);
@@ -20,6 +22,9 @@ function HeaderUser({ userData, id }) {
   const [styleOfBackgroundImage, setStyleOfBackgroundImage] = useState(false);
   const [BackgroundImage, setBackgroundImage] = useState(null);
   const [realtimeDataUser] = useCollection(db.collection("users"));
+  const [styleOfChat, setStyleOfChat] = useState(false);
+  const [DataOfFriend, setDataOfFriend] = useState(null);
+  const [styleOfIconChat, setStyleOfIconChat] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -188,6 +193,53 @@ function HeaderUser({ userData, id }) {
       .delete();
   };
 
+  const addChat = async () => {
+    setDataOfFriend({
+      idFriend: id,
+      img: userData.AvatarImage,
+      fullName: userData.surname.concat(" ", userData.name),
+    });
+    setStyleOfChat(true);
+
+    const listChatUserRef = db
+      .collection("users")
+      .doc(user.uid)
+      .collection("chats")
+      .doc(id);
+    const snapShotListFriend = await listChatUserRef.get();
+    if (!snapShotListFriend.exists) {
+      await listChatUserRef.set({
+        id: id,
+      });
+    }
+
+    const listChatRef = db
+      .collection("users")
+      .doc(id)
+      .collection("chats")
+      .doc(user.uid);
+    const snapShotListChat = await listChatRef.get();
+    if (!snapShotListChat.exists) {
+      await listChatRef.set({
+        id: user.uid,
+      });
+    }
+  };
+
+  const turnOffChat = () => {
+    setStyleOfChat(false);
+    setStyleOfIconChat(true);
+  };
+
+  const turnOnChat = () => {
+    setStyleOfChat(true);
+    setStyleOfIconChat(false);
+  };
+
+  const closeChat = () => {
+    setStyleOfChat(false);
+  };
+
   if (!user || !userData) {
     return null;
   }
@@ -217,7 +269,10 @@ function HeaderUser({ userData, id }) {
                     userDataInDoc.id === id &&
                     !styleOfBackgroundImage &&
                     !userDataInDoc.data().BackgroundImage && (
-                      <div key={userDataInDoc.id} className="w-full h-44 sm:h-96 bg-gray-500 object-cover rounded-lg"></div>
+                      <div
+                        key={userDataInDoc.id}
+                        className="w-full h-44 sm:h-96 bg-gray-500 object-cover rounded-lg"
+                      ></div>
                     )
                 )}
               {styleOfBackgroundImage && (
@@ -303,12 +358,12 @@ function HeaderUser({ userData, id }) {
                   Video
                 </li>
               </ul>
-              <ul className=" hidden sm:flex  w-1/3 justify-between">
-                <li className="font-bold bg-blue-500 hover:bg-blue-600 rounded-md cursor-pointer p-3 text-white">
+              <ul className=" block sm:flex  w-full sm:w-1/3  justify-between">
+                <li className="font-bold bg-blue-500 hover:bg-blue-600 rounded-md cursor-pointer p-3 text-white mb-2 sm:mb-0 ">
                   {!sended && !itIsMe && !isFriend && (
                     <button
                       onClick={() => addFriends()}
-                      className="flex items-center"
+                      className="flex items-center text-center w-full"
                     >
                       <UserAddIcon className="h-4 pr-2" /> Thêm bạn bè
                     </button>
@@ -332,11 +387,16 @@ function HeaderUser({ userData, id }) {
                     </button>
                   )}
                 </li>
-                <li className="font-bold bg-gray-300 hover:bg-gray-400 rounded-md cursor-pointer p-3 ">
-                  <button className="flex items-center">
-                    <ChatIcon className="h-4 pr-2" /> Nhắn tin
-                  </button>
-                </li>
+                {isFriend && !itIsMe && (
+                  <li className="font-bold bg-gray-300 hover:bg-gray-400 rounded-md cursor-pointer p-3 ">
+                    <button
+                      onClick={() => addChat()}
+                      className="flex items-center w-full"
+                    >
+                      <ChatIcon className="h-4 pr-2" /> Nhắn tin
+                    </button>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -352,6 +412,22 @@ function HeaderUser({ userData, id }) {
           </div>
         </div>
       </div>
+      {styleOfChat && (
+        <MessageUser
+          DataOfFriend={DataOfFriend}
+          turnOffChat={turnOffChat}
+          closeChat={closeChat}
+          user={user}
+        />
+      )}
+      {styleOfIconChat && (
+        <div
+          onClick={() => turnOnChat()}
+          className="fixed bottom-7 right-6 sm:right-6 z-10 cursor-pointer"
+        >
+          <Avatar src={DataOfFriend.img} />
+        </div>
+      )}
     </div>
   );
 }

@@ -642,7 +642,7 @@ function Header({ user }) {
       {DataOfFriend && styleOfIconChat && (
         <div
         onClick={() => turnOnChat()}
-          className="fixed bottom-7 sm:right-6 z-10 cursor-pointer"
+          className="fixed bottom-7 right-6 sm:right-6 z-10 cursor-pointer"
         >
           <Avatar src={DataOfFriend.img} />
         </div>
