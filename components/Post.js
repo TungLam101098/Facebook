@@ -225,10 +225,10 @@ const Post = ({
             <input
               type="text"
               ref={commentRef}
-              className="bg-gray-200 w-[70%] sm:w-[85%] border-none focus:outline-none px-3 py-3 rounded-xl ml-5"
+              className="bg-gray-200 w-[50%] sm:w-[85%] border-none focus:outline-none px-3 py-3 rounded-xl ml-5"
               placeholder="Viết bình luận...."
             />
-            <button hidden type="submit" onClick={addComment}>
+            <button className="block sm:hidden bg-gray-200 border-none focus:outline-none px-3 py-3 rounded-xl ml-2" type="submit" onClick={addComment}>
               submit
             </button>
           </form>
