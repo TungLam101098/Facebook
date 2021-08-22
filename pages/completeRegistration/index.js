@@ -15,7 +15,7 @@ function CompleteRegistration() {
   const [number, setNumber] = useState(0);
 
   const CompleteRegister = async () => {
-    if (imageAvatar) {
+    if (imageAvatar && infoUser) {
       const { user } = await auth.createUserWithEmailAndPassword(
         infoUser.email,
         infoUser.password
@@ -76,7 +76,7 @@ function CompleteRegistration() {
         }
       }
     } else {
-      alert("Vui lòng chọn ảnh avatar");
+      alert("Vui lòng chọn ảnh avatar hoặc tải lại trang");
     }
   };
   const addImageToAvatar = (e) => {
