@@ -11,6 +11,7 @@ function Call({ friendId }) {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [pc, setPc] = useState(null);
+  const [agree, setAgree] = useState(true);
 
   const [userData, setUserData] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -108,8 +109,8 @@ function Call({ friendId }) {
           if (!pc.currentRemoteDescription && data?.answer) {
             try {
               setCreateCallText({
-                text: "kết nối thành công",
-                status: false,
+                text: "Kết thúc cuộc gọi",
+                status: true,
               });
               const answerDescription = new RTCSessionDescription(data.answer);
               pc.setRemoteDescription(answerDescription);
@@ -132,12 +133,18 @@ function Call({ friendId }) {
         });
       }
     } else {
-      window.close();
+      const ua = window.navigator.userAgent;
+      if (ua.indexOf("iPhone ") > 0) {
+        window.close();
+      } else {
+        window.close();
+      }
     }
   };
 
   const answerButton = async (data) => {
     if (!notificationCall.status) {
+      setAgree(false);
       setNotificationCall({
         text: "Kết thúc cuộc gọi",
         status: true,
@@ -152,28 +159,28 @@ function Call({ friendId }) {
           .doc(callId);
         const answerCandidates = callDoc.collection("answerCandidates");
         const offerCandidates = callDoc.collection("offerCandidates");
-  
+
         pc.onicecandidate = (event) => {
           event.candidate && answerCandidates.add(event.candidate.toJSON());
         };
-  
+
         const callData = (await callDoc.get()).data();
-  
+
         const offerDescription = callData.offer;
         await pc.setRemoteDescription(
           new RTCSessionDescription(offerDescription)
         );
-  
+
         const answerDescription = await pc.createAnswer();
         await pc.setLocalDescription(answerDescription);
-  
+
         const answer = {
           type: answerDescription.type,
           sdp: answerDescription.sdp,
         };
-  
+
         await callDoc.update({ answer });
-  
+
         offerCandidates.onSnapshot((snapshot) => {
           snapshot.docChanges().forEach((change) => {
             console.log(change);
@@ -185,12 +192,17 @@ function Call({ friendId }) {
         });
       }
     } else {
-      window.close();
+      const ua = window.navigator.userAgent;
+      if (ua.indexOf("iPhone ") > 0) {
+        window.close();
+      } else {
+        window.close();
+      }
     }
-    
   };
 
   const refuseButton = async (data) => {
+
     if (userId) {
       const callId = data.docs[0].id;
       const callDoc = db
@@ -205,7 +217,12 @@ function Call({ friendId }) {
       };
 
       await callDoc.update({ answer });
-      window.close();
+      const ua = window.navigator.userAgent;
+      if (ua.indexOf("iPhone ") > 0) {
+        window.close();
+      } else {
+        window.close();
+      }
     }
   };
 
@@ -223,11 +240,13 @@ function Call({ friendId }) {
         {userId && userId === friendId && (
           <div className="space-x-2">
             <span></span>
-            <button className="bg-blue-500 text-[white] px-3 py-2 rounded-md ">
-              <AgreeCall userId={userId} answerButton={answerButton}>
-                Đồng ý
-              </AgreeCall>
-            </button>
+            {agree && (
+              <button className="bg-blue-500 text-[white] px-3 py-2 rounded-md ">
+                <AgreeCall userId={userId} answerButton={answerButton}>
+                  Đồng ý
+                </AgreeCall>
+              </button>
+            )}
             <button className="bg-red-300 text-[white] px-3 py-2 rounded-md ">
               <AgreeCall userId={userId} refuseButton={refuseButton}>
                 {notificationCall.text}
