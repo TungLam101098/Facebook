@@ -98,6 +98,15 @@ function MessageUser({DataOfFriend, turnOffChat, closeChat, user}) {
     
     MessageRef.current.value = "";
   };
+
+  const callButton = () => {
+    if (user.uid !== DataOfFriend.idFriend) {
+      const win = window.open(`call?id=${DataOfFriend.idFriend}`, "_blank");
+      win.focus();
+    }
+    
+  }
+
   return (
     <div className="h-[455px] w-[338px] fixed bottom-0 right-2 sm:right-20 rounded-lg bg-white z-10">
           <div className="flex-grow">
@@ -115,7 +124,7 @@ function MessageUser({DataOfFriend, turnOffChat, closeChat, user}) {
                 </div>
               </div>
               <div className="flex space-x-4">
-                <VideoCameraIcon className="h-5 text-blue-500 cursor-pointer" />
+                <VideoCameraIcon onClick={callButton} className="h-5 text-blue-500 cursor-pointer" />
                 <PhoneIcon className="h-5 text-blue-500 cursor-pointer" />
                 <MinusIcon
                   onClick={() => turnOffChat()}

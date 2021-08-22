@@ -31,6 +31,7 @@ function Message({ img, id, user }) {
         realtimeMessages.docs.map((message) =>
           message.data().id === user.uid ? (
             <div
+              key={message.data().id}
               style={{ width: "fit-content" }}
               className="flex justify-center items-center ml-auto text-center mt-1"
             >
@@ -40,6 +41,7 @@ function Message({ img, id, user }) {
             </div>
           ) : (
             <div
+              key={message.data().id}
               style={{ width: "fit-content" }}
               className="flex justify-center items-center text-left min-w-[20px] mt-1"
             >

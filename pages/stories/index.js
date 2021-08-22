@@ -27,7 +27,7 @@ function Stories({ uid }) {
     };
   };
   const addStory = async () => {
-    if (imageStory) {
+    if (imageStory && infoUser) {
       await db
         .collection("users")
         .doc(uid)
@@ -77,7 +77,7 @@ function Stories({ uid }) {
         realtimeUser.docs.map(
           (dataUser) =>
             dataUser.id === uid && (
-              <div style={{ flex: 0.3 }} className="h-auto sm:h-screen w-full relative">
+              <div key={dataUser.id } style={{ flex: 0.3 }} className="h-auto sm:h-screen w-full relative">
                 <Link href="/">
                   <div className="p-3 cursor-pointer">
                     <XCircleIcon className="h-14 text-gray-400" />

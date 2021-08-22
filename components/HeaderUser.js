@@ -205,6 +205,7 @@ function HeaderUser({ userData, id }) {
                     !styleOfBackgroundImage &&
                     userDataInDoc.data().BackgroundImage && (
                       <img
+                        key={userDataInDoc.id}
                         className="w-full h-44 sm:h-96 object-cover rounded-lg"
                         src={userDataInDoc.data().BackgroundImage}
                       />
@@ -216,7 +217,7 @@ function HeaderUser({ userData, id }) {
                     userDataInDoc.id === id &&
                     !styleOfBackgroundImage &&
                     !userDataInDoc.data().BackgroundImage && (
-                      <div className="w-full h-44 sm:h-96 bg-gray-500 object-cover rounded-lg"></div>
+                      <div key={userDataInDoc.id} className="w-full h-44 sm:h-96 bg-gray-500 object-cover rounded-lg"></div>
                     )
                 )}
               {styleOfBackgroundImage && (

@@ -17,7 +17,7 @@ const Feed = ({ user }) => {
         <InputBox user={user} />
         {/* Posts */}
         {realtimeFriends &&
-          realtimeFriends.docs.map((friend) => <Posts idUser={user.uid} uid={friend.id} />)}
+          realtimeFriends.docs.map((friend) => <Posts key={friend.id} idUser={user.uid} uid={friend.id} />)}
       </div>
     </div>
   );

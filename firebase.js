@@ -15,6 +15,14 @@ if (!firebase.apps.length) {
 } else {
   firebase.app();
 }
+export const servers = {
+  iceServers: [
+    {
+      urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
+    },
+  ],
+  iceCandidatePoolSize: 10,
+};
 
 const db = firebase.firestore();
 const storage = firebase.storage();

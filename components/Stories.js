@@ -32,6 +32,7 @@ const Stories = ({ user }) => {
           (dataUser) =>
             dataUser.id === user.uid && (
               <div
+                key={dataUser.id}
                 style={{
                   borderBottomLeftRadius: "24px",
                   borderBottomRightRadius: "24px",

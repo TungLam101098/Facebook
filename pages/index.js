@@ -7,6 +7,7 @@ import Widgets from "../components/Widgets";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
 import Loading from "../components/Loading";
+import CallNotification from "../components/CallNotification";
 
 export default function Home() {
   const [user, loading] = useAuthState(auth);
@@ -15,7 +16,8 @@ export default function Home() {
   if (!user) return <Login />;
 
   return (
-    <div className="h-screen bg-gray-100 overflow-hidden">
+    <div className="h-screen bg-gray-100 overflow-hidden relative">
+      <CallNotification user={user} />
       <Head>
         <title>Facebook</title>
       </Head>
