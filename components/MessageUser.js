@@ -16,8 +16,10 @@ import Message from "./Message";
 import firebase from "firebase";
 import { db } from "../firebase";
 import { Avatar } from "@material-ui/core";
+import { useRouter } from "next/router";
 
 function MessageUser({DataOfFriend, turnOffChat, closeChat, user}) {
+  const router = useRouter();
   const MessageRef = useRef(null);
   const [focused, setFocused] = useState(false);
 
@@ -107,12 +109,16 @@ function MessageUser({DataOfFriend, turnOffChat, closeChat, user}) {
     
   }
 
+  const linkToUser = () => {
+    router.push(`/user?id=${DataOfFriend.idFriend}`);
+  }
+
   return (
     <div className="h-[455px] w-[338px] fixed bottom-0 right-2 sm:right-20 rounded-lg bg-white z-10">
           <div className="flex-grow">
             <div className="flex justify-between p-2 items-center shadow-md">
-              <div className="flex justify-center items-center">
-                <div className="relative">
+              <div onClick={linkToUser} className="flex justify-center items-center">
+                <div className="relative cursor-pointer">
                   <Avatar src={DataOfFriend.img} />
                   <div className="absolute bottom-0 right-1 bg-green-400 h-3 w-3 rounded-full border-white border-2"></div>
                 </div>

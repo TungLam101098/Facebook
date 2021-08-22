@@ -35,9 +35,9 @@ function CallNotification({ user }) {
       { realtimeCall && lengthOfNotification !== 0 && (
         <div
           style={{ backgroundColor: "rgba(52, 52, 52, 0.8)" }}
-          className="absolute text-center w-screen h-screen bg-black text-white top-0 z-20"
+          className="absolute text-center w-full h-screen bg-black text-white top-0 overflow-x-hidden z-20"
         >
-          <div className="absolute top-[50%] left-[45%] text-center">
+          <div className="absolute top-[50%] left-[1rem] sm:left-[45%] text-center">
             <div className="flex justify-center items-center bg-gray-200 p-3 space-x-2 rounded-md">
               <Image
                 className=" rounded-full cursor-pointer"

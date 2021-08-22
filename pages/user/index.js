@@ -6,6 +6,7 @@ import Posts from "../../components/Posts";
 import { useEffect, useState } from "react";
 import Login from "../../components/Login";
 import Loading from "../../components/Loading";
+import CallNotification from "../../components/CallNotification";
 
 function User({ uid }) {
   const [user, loading] = useAuthState(auth);
@@ -29,6 +30,7 @@ function User({ uid }) {
   if (!user) return <Login />;
   return (
     <div>
+      <CallNotification user={user} />
       <Header user={user} />
       <main>
         <HeaderUser userData={userData} id={uid} />
