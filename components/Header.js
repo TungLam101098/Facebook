@@ -50,9 +50,18 @@ function Header({ user }) {
   const [styleOfIconChat, setStyleOfIconChat] = useState(false);
 
   useEffect(() => {
+    const setStatus = async () => {
+      const listStatusRef = db.collection("users").doc(user.uid);
+      await listStatusRef.update({
+        status: true,
+      });
+    };
+    setStatus();
+  }, []);
+
+  useEffect(() => {
     if (!roomId) return;
     const getDataOfFriend = async () => {
-      
       const friendRef = db.collection("users").doc(roomId);
       const doc = await friendRef.get();
       if (!doc.exists) {
@@ -61,7 +70,8 @@ function Header({ user }) {
         setDataOfFriend({
           idFriend: doc.id,
           img: doc.data().AvatarImage,
-          fullName: (doc.data().surname).concat(" ", doc.data().name),
+          fullName: doc.data().surname.concat(" ", doc.data().name),
+          status: doc.data().status
         });
       }
     };
@@ -143,7 +153,11 @@ function Header({ user }) {
     setFocused(false);
   };
 
-  const signOut = () => {
+  const signOut = async () => {
+    const listStatusRef = db.collection("users").doc(user.uid);
+    await listStatusRef.update({
+      status: false,
+    });
     auth.signOut();
     dispatch(
       infoUser({
@@ -338,7 +352,10 @@ function Header({ user }) {
         </Link>
       </div>
       <div className="flex ml-2 items-center rounded-full bg-gray-100 p-2">
-        <SearchIcon className="h-6 text-gray-600 cursor-pointer" onClick={onFocus} />
+        <SearchIcon
+          className="h-6 text-gray-600 cursor-pointer"
+          onClick={onFocus}
+        />
         <input
           className="inline-flex w-full sm:w[80%] ml-2 items-center bg-transparent outline-none placeholder-gray-500 flex-shrink"
           type="text"
@@ -353,7 +370,10 @@ function Header({ user }) {
         <div className="absolute w-full lg:w-1/5 sm:w-[50%] top-full left-0 bg-white p-5">
           <div className="flex justify-between items-center">
             <h4 className="font-bold text-lg">Tìm kiếm gần đây</h4>
-            <span className="text-blue-500 hover:bg-gray-200 cursor-pointer" onClick={onBlur}>
+            <span
+              className="text-blue-500 hover:bg-gray-200 cursor-pointer"
+              onClick={onBlur}
+            >
               X
             </span>
           </div>
@@ -638,10 +658,17 @@ function Header({ user }) {
           </div>
         )}
       </div>
-      {DataOfFriend && styleOfMessageUser && styleOfChat && <MessageUser turnOffChat={turnOffChat} closeChat={closeChat} DataOfFriend={DataOfFriend} user={user} />}
+      {DataOfFriend && styleOfMessageUser && styleOfChat && (
+        <MessageUser
+          turnOffChat={turnOffChat}
+          closeChat={closeChat}
+          DataOfFriend={DataOfFriend}
+          user={user}
+        />
+      )}
       {DataOfFriend && styleOfIconChat && (
         <div
-        onClick={() => turnOnChat()}
+          onClick={() => turnOnChat()}
           className="fixed bottom-7 right-6 sm:right-6 z-10 cursor-pointer"
         >
           <Avatar src={DataOfFriend.img} />

@@ -31,6 +31,7 @@ function CompleteRegistration() {
               surname: infoUser.surname,
               gender: infoUser.gender,
               birthday: infoUser.birthday,
+              status: true,
               timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             })
             .then(() => {

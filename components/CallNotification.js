@@ -28,11 +28,22 @@ function CallNotification({ user }) {
   const callButton = () => {
     const win = window.open(`call?id=${user.uid}`, "_blank");
     win.focus();
-  }
+  };
+
+  const setData = async () => {
+    const listStatusRef = db.collection("users").doc(user.uid);
+    await listStatusRef.update({
+      status: false,
+    });
+  };
+
+  window.addEventListener("beforeunload", () => {
+    setData();
+  });
 
   return (
     <>
-      { realtimeCall && lengthOfNotification !== 0 && (
+      {realtimeCall && lengthOfNotification !== 0 && (
         <div
           style={{ backgroundColor: "rgba(52, 52, 52, 0.8)" }}
           className="absolute text-center w-full h-screen bg-black text-white top-0 overflow-x-hidden z-20"
@@ -46,7 +57,10 @@ function CallNotification({ user }) {
                 height={40}
                 layout="fixed"
               />
-              <button onClick={callButton} className="px-4 py-2 bg-blue-500 rounded-lg">
+              <button
+                onClick={callButton}
+                className="px-4 py-2 bg-blue-500 rounded-lg"
+              >
                 {realtimeCall.docs[0].data().name} đang gọi bạn...
               </button>
             </div>

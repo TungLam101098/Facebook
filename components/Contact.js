@@ -4,7 +4,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../firebase";
 import firebase from "firebase";
 
-import {  useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import MessageUser from "./MessageUser";
 
@@ -15,14 +15,15 @@ const Contact = ({ id, user }) => {
   const [styleOfIconChat, setStyleOfIconChat] = useState(false);
   const [DataOfFriend, setDataOfFriend] = useState(null);
 
-  const addChat = async (idFriend, img, surname, name) => {
+  const addChat = async (idFriend, img, surname, name, status) => {
     setStyleOfChat(true);
     setDataOfFriend({
       idFriend: idFriend,
       img: img,
       fullName: surname.concat(" ", name),
+      status: status
     });
-    
+
     const listChatUserRef = db
       .collection("users")
       .doc(user.uid)
@@ -72,7 +73,8 @@ const Contact = ({ id, user }) => {
                     friend.id,
                     friend.data().AvatarImage,
                     friend.data().surname,
-                    friend.data().name
+                    friend.data().name,
+                    friend.data().status
                   )
                 }
                 className="flex items-center space-x-3 mb-2 relative hover:bg-gray-200 cursor-pointer p-2 rounded-xl"
@@ -88,12 +90,19 @@ const Contact = ({ id, user }) => {
                 <p className="hidden sm:block">
                   {friend.data().surname} {friend.data().name}{" "}
                 </p>
-                <div className="absolute bottom-2 left-7 bg-green-400 h-3 w-3 rounded-full border-white border-2"></div>
+                {friend.data().status && (
+                  <div className="absolute bottom-2 left-7 bg-green-400 h-3 w-3 rounded-full border-white border-2"></div>
+                )}
               </div>
             )
         )}
       {styleOfChat && (
-        <MessageUser DataOfFriend={DataOfFriend} turnOffChat={turnOffChat} closeChat={closeChat} user={user} />
+        <MessageUser
+          DataOfFriend={DataOfFriend}
+          turnOffChat={turnOffChat}
+          closeChat={closeChat}
+          user={user}
+        />
       )}
       {styleOfIconChat && (
         <div

@@ -198,6 +198,7 @@ function HeaderUser({ userData, id }) {
       idFriend: id,
       img: userData.AvatarImage,
       fullName: userData.surname.concat(" ", userData.name),
+      status: userData.status
     });
     setStyleOfChat(true);
 
