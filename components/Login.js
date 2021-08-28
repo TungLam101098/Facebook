@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Head from "next/head";
 import { QuestionMarkCircleIcon } from "@heroicons/react/solid";
 import { useRef } from "react";
@@ -5,7 +6,8 @@ import { useDispatch } from "react-redux";
 import { infoUser } from "../redux/features/userSlice";
 import { useRouter } from "next/router";
 import { auth } from "../firebase";
-import emailjs from 'emailjs-com';
+import emailjs from "emailjs-com";
+import { Modal } from "antd";
 
 const Login = () => {
   const verification = Math.floor(10000 + Math.random() * 90000);
@@ -25,6 +27,7 @@ const Login = () => {
   const yearRef = useRef(null);
   const MaleRef = useRef(null);
   const FemaleRef = useRef(null);
+  const [visible, setVisible] = useState(false);
 
   const LoginSubmit = async (e) => {
     // e.preventDefault();
@@ -33,7 +36,7 @@ const Login = () => {
     try {
       await auth.signInWithEmailAndPassword(email, password);
     } catch (err) {
-      alert("Email bạn không kết nối với tài khoản nào.")
+      alert("Email bạn không kết nối với tài khoản nào.");
       console.log(err);
     }
   };
@@ -123,8 +126,6 @@ const Login = () => {
           integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
           crossorigin="anonymous"
         />
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
       </Head>
       <div className="flex justify-center items-center h-screen bg-[#f0f2f5]">
         <div className="w-4/5 block md:grid grid-cols-2 gap-x-10">
@@ -172,124 +173,110 @@ const Login = () => {
               <hr />
               <button
                 type="button"
+                onClick={() => setVisible(true)}
                 className="w-full lg:w-6/12 bg-green-400 text-white px-5 py-5 my-2 box-border outline-none border-none hover:bg-green-500 rounded-md text-3xl"
-                data-toggle="modal"
-                data-target="#exampleModalCenter"
               >
                 Tạo tài khoản mới
               </button>
             </div>
-            <form
-              className="modal fade"
-              id="exampleModalCenter"
-              tabIndex="-1"
-              role="dialog"
-              aria-labelledby="exampleModalCenterTitle"
-              aria-hidden="true"
-              onSubmit={RegisterSubmit}
+            <Modal
+              title="Đăng ký"
+              centered
+              visible={visible}
+              footer={null}
+              onCancel={() => setVisible(false)}
+              width={1000}
             >
-              <div
-                className="modal-dialog modal-dialog-centered"
-                role="document"
-              >
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h3
-                      className="modal-title text-6xl font-bold pb-4"
-                      id="exampleModalLongTitle"
-                    >
-                      Đăng ký
-                    </h3>
-                    <span>Nhanh chóng và dễ dàng</span>
-                    <button
-                      type="button"
-                      className="close"
-                      data-dismiss="modal"
-                      aria-label="Close"
-                    >
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div className="modal-body">
-                    <input
-                      type="text"
-                      className="style-input w-6/12"
-                      placeholder="Họ"
-                      ref={surnameRef}
-                    />
-                    <input
-                      type="text"
-                      className="style-input w-6/12"
-                      name="Name"
-                      placeholder="Tên"
-                      ref={nameRef}
-                    />
-                    <input
-                      type="email"
-                      name="email"
-                      className="style-input w-full"
-                      placeholder="Email"
-                      ref={emailRef}
-                    />
-                    <input
-                      type="password"
-                      className="style-input w-full"
-                      placeholder="Mật khẩu mới"
-                      ref={passwordRef}
-                    />
-                    <input name="message" defaultValue={verification} hidden />
-                    <span className="flex items-center text-gray-500">
-                      Ngày sinh <QuestionMarkCircleIcon className="h-7" />{" "}
-                    </span>
-                    <select className="style-input w-1/3" ref={datedRef}>
-                      <option>Ngày {String(new Date().getDate())}</option>
-                      {getOptions(1, 31, "Ngày")}
-                    </select>
-                    <select className="style-input w-1/3" ref={monthRef}>
-                      <option>Tháng {String(new Date().getMonth() + 1)}</option>
-                      {getOptions(1, 12, "Tháng")}
-                    </select>
-                    <select className="style-input w-1/3" ref={yearRef}>
-                      <option>Năm {String(new Date().getFullYear())}</option>
-                      {getOptions(thisYear - 50, thisYear, "Năm")}
-                    </select>
-                    <span className="flex items-center text-gray-500">
-                      Giới tính <QuestionMarkCircleIcon className="h-7" />{" "}
-                    </span>
-                    <div className="flex">
-                      <div className="w-6/12 rounded-md border-solid border-2 border-gray-300 h-20 text-3xl flex justify-between px-5 py-5">
-                        <span>Nam</span>
-                        <input
-                          className="scale-150"
-                          type="radio"
-                          name="gender"
-                          value="1"
-                          ref={MaleRef}
-                        />
-                      </div>
-                      <div className="w-6/12 rounded-md border-solid border-2 border-gray-300 h-20 text-3xl flex justify-between px-5 py-5">
-                        <span>Nữ</span>
-                        <input
-                          className="scale-150"
-                          type="radio"
-                          name="gender"
-                          value="0"
-                          ref={FemaleRef}
-                        />
+              <form onSubmit={RegisterSubmit}>
+                <div>
+                  <div>
+                    <div className="modal-body">
+                      <input
+                        type="text"
+                        className="style-input w-6/12"
+                        placeholder="Họ"
+                        ref={surnameRef}
+                      />
+                      <input
+                        type="text"
+                        className="style-input w-6/12"
+                        name="Name"
+                        placeholder="Tên"
+                        ref={nameRef}
+                      />
+                      <input
+                        type="email"
+                        name="email"
+                        className="style-input w-full"
+                        placeholder="Email"
+                        ref={emailRef}
+                      />
+                      <input
+                        type="password"
+                        className="style-input w-full"
+                        placeholder="Mật khẩu mới"
+                        ref={passwordRef}
+                      />
+                      <input
+                        name="message"
+                        defaultValue={verification}
+                        hidden
+                      />
+                      <span className="flex items-center text-gray-500">
+                        Ngày sinh <QuestionMarkCircleIcon className="h-7" />{" "}
+                      </span>
+                      <select className="style-input w-1/3" ref={datedRef}>
+                        <option>Ngày {String(new Date().getDate())}</option>
+                        {getOptions(1, 31, "Ngày")}
+                      </select>
+                      <select className="style-input w-1/3" ref={monthRef}>
+                        <option>
+                          Tháng {String(new Date().getMonth() + 1)}
+                        </option>
+                        {getOptions(1, 12, "Tháng")}
+                      </select>
+                      <select className="style-input w-1/3" ref={yearRef}>
+                        <option>Năm {String(new Date().getFullYear())}</option>
+                        {getOptions(thisYear - 50, thisYear, "Năm")}
+                      </select>
+                      <span className="flex items-center text-gray-500">
+                        Giới tính <QuestionMarkCircleIcon className="h-7" />{" "}
+                      </span>
+                      <div className="flex">
+                        <div className="w-6/12 rounded-md border-solid border-2 border-gray-300 h-20 text-3xl flex justify-between px-5 py-5">
+                          <span>Nam</span>
+                          <input
+                            className="scale-150"
+                            type="radio"
+                            name="gender"
+                            value="1"
+                            ref={MaleRef}
+                          />
+                        </div>
+                        <div className="w-6/12 rounded-md border-solid border-2 border-gray-300 h-20 text-3xl flex justify-between px-5 py-5">
+                          <span>Nữ</span>
+                          <input
+                            className="scale-150"
+                            type="radio"
+                            name="gender"
+                            value="0"
+                            ref={FemaleRef}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="modal-footer text-center">
-                    <button
-                      type="submit"
-                      className="w-2/5 bg-green-400 text-white px-5 py-5 my-2 box-border outline-none border-none hover:bg-green-500 rounded-md text-3xl"
-                    >
-                      Đăng Ký
-                    </button>
+                    <div className="modal-footer text-center">
+                      <button
+                        type="submit"
+                        className="w-2/5 bg-green-400 text-white px-5 py-5 my-2 box-border outline-none border-none hover:bg-green-500 rounded-md text-3xl"
+                      >
+                        Đăng Ký
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </Modal>
             <span>
               <span>Tạo trang</span>dành cho người nổi tiếng, nhãn hiệu hoặc
               doanh nghiệp.

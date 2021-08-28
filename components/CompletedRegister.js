@@ -2,13 +2,13 @@ import { ChevronDownIcon } from "@heroicons/react/outline";
 import { Avatar } from "@material-ui/core";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { auth, db, firestore, storage } from "../../firebase";
-import { selectInfo } from "../../redux/features/userSlice";
+import { auth, db, firestore, storage } from "../firebase";
+import { selectInfo } from "../redux/features/userSlice";
 import firebase from "firebase";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-function CompleteRegistration() {
+function CompletedRegister() {
   const [imageAvatar, setImageAvatar] = useState(null);
   const infoUser = useSelector(selectInfo);
   const router = useRouter();
@@ -153,4 +153,4 @@ function CompleteRegistration() {
   );
 }
 
-export default CompleteRegistration;
+export default CompletedRegister;
