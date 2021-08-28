@@ -1,24 +1,28 @@
 import Image from "next/image";
+import ModalElement from "./Modal";
+import React from "react";
 
 const StoryCard = ({ name, src, profile }) => {
   return (
-    <div className="relative h-56 w-32 cursor-pointer overflow-x p-3
-    transition duration-200 transform ease-in hover:scale-105 hover:animate-pulse
-    ">
+    <div
+      className="relative 
+    "
+    >
+      
+      <ModalElement src={src} className="object-cover filter brightness-75 rounded-3xl" />
+      <p className="absolute opacity-100 bottom-4 w5/6 text-white text-sm font-bold truncate">
+        {name}
+      </p>
+      <div className="absolute opacity-100 rounded-full z-50 top-5 left-[5%]">
       <Image
-        className="absolute opacity-100 rounded-full z-50 top-10"
+        className="rounded-full "
         src={profile}
         width={40}
         height={40}
         layout="fixed"
         objectFit="cover"
       />
-      <Image
-        className="object-cover filter brightness-75 rounded-3xl"
-        src={src}
-        layout="fill"
-      />
-      <p className="absolute opacity-100 bottom-4 w5/6 text-white text-sm font-bold truncate">{name}</p>
+      </div>
     </div>
   );
 };

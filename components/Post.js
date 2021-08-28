@@ -9,6 +9,7 @@ import { selectInfo } from "../redux/features/userSlice";
 import firebase from "firebase";
 import { useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
+import ModalElement from "./Modal";
 
 const Post = ({
   id,
@@ -149,7 +150,9 @@ const Post = ({
       </div>
       {postImage && (
         <div className="relative bg-auto h-56 md:h-96 bg-white">
-          <Image src={postImage} objectFit="cover" layout="fill" />
+          <ModalElement src={postImage} >
+            {/* <Image src={postImage} objectFit="cover" layout="fill" /> */}
+          </ModalElement>
         </div>
       )}
       {/* Section post detail */}
@@ -161,7 +164,7 @@ const Post = ({
           )}
           {realtimeLike && realtimeLike.docs[0] && realtimeLike.docs[1] && (
             <span>
-              {realtimeLike.docs[0].data().name} và{" "}
+              {", "}{realtimeLike.docs[1].data().name} và{", "}
               {realtimeLike.docs.length - 1} người khác
             </span>
           )}
@@ -174,14 +177,14 @@ const Post = ({
         </div>
       </div>
       {/* Footer of post */}
-      <div className="flex justify-between items-center bg-white shadow-md text-gray-600 border-t">
+      <div style={{ borderTop: '0.5px solid #80808054' }} className="flex justify-between items-center bg-white shadow-md text-gray-600 border-t">
         {!styleOfThum ? (
           <div
             onClick={() => addLike()}
             className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer rounded-none rounded-bl-2xl"
           >
             <ThumbUpIcon className="h-4" />
-            <p className="text-sx sm:text-base">Thích</p>
+            <p className="text-sx sm:text-base m-0">Thích</p>
           </div>
         ) : (
           <div
@@ -189,20 +192,20 @@ const Post = ({
             className="flex items-center text-blue-600 space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer rounded-none rounded-bl-2xl"
           >
             <ThumbUpIconSolid className="h-4" />
-            <p className="text-sx sm:text-base">Thích</p>
+            <p className="text-sx sm:text-base m-0">Thích</p>
           </div>
         )}
 
         <div className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer rounded-none">
           <ChatAltIcon className="h-4" />
-          <p className="text-sx sm:text-base">Bình luận</p>
+          <p className="text-sx sm:text-base m-0">Bình luận</p>
         </div>
         <div className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer rounded-none rounded-br-2xl">
           <ShareIcon className="h-4" />
-          <p className="text-sx sm:text-base">Chia sẻ</p>
+          <p className="text-sx sm:text-base m-0">Chia sẻ</p>
         </div>
       </div>
-      <div className="bg-white rounded-lg border-t relative">
+      <div style={{ borderTop: '0.5px solid #80808054' }} className="bg-white rounded-lg border-t relative">
         <div className="p-5 h-auto pb-5 flex-grow overflow-y-auto scrollbar-hide">
           <ul className="mb-16">
             {realtimeComments &&
@@ -228,7 +231,11 @@ const Post = ({
               className="bg-gray-200 w-[50%] sm:w-[85%] border-none focus:outline-none px-3 py-3 rounded-xl ml-5"
               placeholder="Viết bình luận...."
             />
-            <button className="block sm:hidden bg-gray-200 border-none focus:outline-none px-3 py-3 rounded-xl ml-2" type="submit" onClick={addComment}>
+            <button
+              className="block sm:hidden bg-gray-200 border-none focus:outline-none px-3 py-3 rounded-xl ml-2"
+              type="submit"
+              onClick={addComment}
+            >
               submit
             </button>
           </form>

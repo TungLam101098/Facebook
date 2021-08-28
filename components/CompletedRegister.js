@@ -1,6 +1,6 @@
 import { ChevronDownIcon } from "@heroicons/react/outline";
 import { Avatar } from "@material-ui/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { auth, db, firestore, storage } from "../firebase";
 import { selectInfo } from "../redux/features/userSlice";
@@ -15,7 +15,10 @@ function CompletedRegister() {
   const [number, setNumber] = useState(0);
 
   const CompleteRegister = async () => {
-    if (imageAvatar && infoUser) {
+    if (!infoUser) {
+      alert('Đăng ký lỗi!');
+      router.push("/");
+    } else if (imageAvatar) {
       const { user } = await auth.createUserWithEmailAndPassword(
         infoUser.email,
         infoUser.password
@@ -77,7 +80,7 @@ function CompletedRegister() {
         }
       }
     } else {
-      alert("Vui lòng chọn ảnh avatar hoặc tải lại trang");
+      alert("Vui lòng chọn ảnh avatar");
     }
   };
   const addImageToAvatar = (e) => {

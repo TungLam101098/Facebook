@@ -357,7 +357,7 @@ function Header({ user }) {
           onClick={onFocus}
         />
         <input
-          className="inline-flex w-full sm:w[80%] ml-2 items-center bg-transparent outline-none placeholder-gray-500 flex-shrink"
+          className="inline-flex w-full sm:w[80%] ml-2 items-center bg-transparent outline-none placeholder-gray-500 flex-shrink border-0"
           type="text"
           value={query}
           onFocus={onFocus}

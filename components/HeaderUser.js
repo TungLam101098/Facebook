@@ -12,6 +12,9 @@ import firebase from "firebase";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { Avatar } from "@material-ui/core";
 import MessageUser from "./MessageUser";
+import ModalElement from "./Modal";
+
+import { Image } from "antd";
 
 function HeaderUser({ userData, id }) {
   const [user] = useAuthState(auth);
@@ -320,13 +323,10 @@ function HeaderUser({ userData, id }) {
               )}
             </div>
 
-            <div className="flex justify-center absolute top-32 left-[30%] sm:left-[42%] sm:top-80">
+            <div style={{ transform: 'translate(-50%, 0)' }} className="flex justify-center absolute top-32 left-[50%] sm:left-[50%] sm:top-80">
               <div className="relative">
-                <img
-                  className="rounded-full object-cover cursor-pointer w-36 h-36 border-solid border-white border-4"
-                  src={userData.AvatarImage}
-                  layout="fixed"
-                />
+              <Image src={userData.AvatarImage} width="9rem" height="9rem" className="rounded-full object-cover cursor-pointer border-solid border-white border-4" />
+               
                 <CameraIcon className="h-9 rounded-full bg-gray-300 p-1 absolute right-4 top-3/4 cursor-pointer" />
               </div>
             </div>
@@ -360,7 +360,7 @@ function HeaderUser({ userData, id }) {
                 </li>
               </ul>
               <ul className=" block sm:flex  w-full sm:w-1/3  justify-between">
-                <li className="font-bold bg-blue-500 hover:bg-blue-600 rounded-md cursor-pointer p-3 text-white mb-2 sm:mb-0 ">
+                <li className="font-bold bg-blue-500  rounded-md cursor-pointer p-3 text-white mb-2 sm:mb-0 ">
                   {!sended && !itIsMe && !isFriend && (
                     <button
                       onClick={() => addFriends()}
@@ -378,12 +378,12 @@ function HeaderUser({ userData, id }) {
                     </button>
                   )}
                   {itIsMe && !sended && (
-                    <button className="flex items-center">
+                    <button className="flex items-center cursor-pointer border-0 ">
                       <PlusCircleIcon className="h-4 pr-2" /> Thêm vào tin
                     </button>
                   )}
                   {isFriend && !itIsMe && (
-                    <button className="flex items-center">
+                    <button className="flex items-center cursor-pointer border-0">
                       <UsersIcon className="h-4 pr-2" /> Bạn bè
                     </button>
                   )}
@@ -392,7 +392,7 @@ function HeaderUser({ userData, id }) {
                   <li className="font-bold bg-gray-300 hover:bg-gray-400 rounded-md cursor-pointer p-3 ">
                     <button
                       onClick={() => addChat()}
-                      className="flex items-center w-full"
+                      className="flex items-center w-full cursor-pointer border-0 "
                     >
                       <ChatIcon className="h-4 pr-2" /> Nhắn tin
                     </button>

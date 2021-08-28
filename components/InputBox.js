@@ -109,7 +109,7 @@ const InputBox = ({ user }) => {
         />
         <form className="flex flex-1">
           <input
-            className="rounded-full h-12 bg-gray-100 flex-grow px-5 w-full sm:w-auto focus:outline-none"
+            className="rounded-full h-12 bg-gray-100 flex-grow px-5 w-full sm:w-auto focus:outline-none border-0"
             type="text"
             ref={inputRef}
             placeholder={` ${infoUser.name} ơi, bạn đang nghĩ gì thế?`}
@@ -131,14 +131,14 @@ const InputBox = ({ user }) => {
       <div className="flex justify-evenly p-3 border-t">
         <div className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer">
           <VideoCameraIcon className="h-7 text-red-500" />
-          <p className="text-xs sm:text-sm xl:text-base">Video trực tiếp</p>
+          <p className="text-xs sm:text-sm xl:text-base m-0">Video trực tiếp</p>
         </div>
         <div
           onClick={() => filepickerRef.current.click()}
           className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer"
         >
           <CameraIcon className="h-7 text-green-400" />
-          <p className="text-xs sm:text-sm xl:text-base">Ảnh/Video</p>
+          <p className="text-xs sm:text-sm xl:text-base m-0">Ảnh/Video</p>
           <input
             ref={filepickerRef}
             onChange={addImageToPost}
@@ -148,7 +148,7 @@ const InputBox = ({ user }) => {
         </div>
         <div className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer">
           <EmojiHappyIcon className="h-7 text-yellow-300" />
-          <p className="text-xs sm:text-sm xl:text-base">Cảm xúc/Hoạt động</p>
+          <p className="text-xs sm:text-sm xl:text-base m-0">Cảm xúc/Hoạt động</p>
         </div>
       </div>
     </div>

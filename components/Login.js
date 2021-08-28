@@ -28,6 +28,15 @@ const Login = () => {
   const MaleRef = useRef(null);
   const FemaleRef = useRef(null);
   const [visible, setVisible] = useState(false);
+  const [checkPassword, setCheckPassword] = useState(false);
+
+  const handleChange = (e) => {
+    if (e.target.value.length <= 5) {
+      setCheckPassword(true);
+    } else {
+      setCheckPassword(false);
+    }
+  }
 
   const LoginSubmit = async (e) => {
     // e.preventDefault();
@@ -54,6 +63,8 @@ const Login = () => {
       (!MaleRef.current.checked && !FemaleRef.current.checked)
     ) {
       alert("Invalid input");
+    } else if (passwordRef.current.value.length <= 5) {
+      alert("Mật khẩu ít nhất 6 ký tự")
     } else {
       const birthday =
         datedRef.current.value + monthRef.current.value + yearRef.current.value;
@@ -174,7 +185,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => setVisible(true)}
-                className="w-full lg:w-6/12 bg-green-400 text-white px-5 py-5 my-2 box-border outline-none border-none hover:bg-green-500 rounded-md text-3xl"
+                className="w-full md:w-full lg:w-6/12 bg-green-400 text-white px-5 py-5 my-2 box-border outline-none border-none hover:bg-green-500 rounded-md text-3xl"
               >
                 Tạo tài khoản mới
               </button>
@@ -215,8 +226,14 @@ const Login = () => {
                         type="password"
                         className="style-input w-full"
                         placeholder="Mật khẩu mới"
+                        onChange={handleChange}
                         ref={passwordRef}
                       />
+                      {
+                        checkPassword && (
+                          <div className="text-red-400 text-sm">Mật khẩu ít nhất 6 ký tự</div>
+                        )
+                      }
                       <input
                         name="message"
                         defaultValue={verification}

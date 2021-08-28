@@ -1,4 +1,4 @@
-@tailwind base;
+/* @tailwind base; */
 @tailwind components;
 @tailwind utilities;
 
@@ -9,5 +9,22 @@
   .style-input {
     @apply px-5 py-5 text-3xl my-2 box-border outline-none border-2 border-solid border-[#dddfe2] focus:border-blue-500 rounded-md;
   }
-  
+}
+
+ul, li{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+ol, ul {
+	list-style: none;
+}
+button {
+	background-color: transparent;
+}
+p {
+	margin: 0 0 0 1rem !important;
 }
