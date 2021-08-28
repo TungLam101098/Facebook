@@ -22,6 +22,7 @@ function MessageUser({ DataOfFriend, turnOffChat, closeChat, user }) {
   const router = useRouter();
   const MessageRef = useRef(null);
   const [focused, setFocused] = useState(false);
+  const [message, setMessage] = useState(null);
 
   const onBlur = () => {
     setFocused(false);
@@ -30,75 +31,75 @@ function MessageUser({ DataOfFriend, turnOffChat, closeChat, user }) {
     if (e.target.value === "") {
       setFocused(false);
     } else {
+      setMessage(e.target.value);
       setFocused(true);
     }
   };
   const submitMessage = async (e) => {
     e.preventDefault();
-    if (!MessageRef.current.value) return;
-    setFocused(false);
-
-    if (user.uid === DataOfFriend.idFriend) {
-      await db
+    if (message) {
+      MessageRef.current.value = "";
+      setFocused(false);
+      if (user.uid === DataOfFriend.idFriend) {
+        await db
+          .collection("users")
+          .doc(user.uid)
+          .collection("chats")
+          .doc(DataOfFriend.idFriend)
+          .collection("messages")
+          .add({
+            id: user.uid,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            message: message,
+          });
+      } else {
+        await db
+          .collection("users")
+          .doc(user.uid)
+          .collection("chats")
+          .doc(DataOfFriend.idFriend)
+          .collection("messages")
+          .add({
+            id: user.uid,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            message: message,
+          });
+  
+        await db
+          .collection("users")
+          .doc(DataOfFriend.idFriend)
+          .collection("chats")
+          .doc(user.uid)
+          .collection("messages")
+          .add({
+            id: user.uid,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            message: message,
+          });
+      }
+  
+      const listChatRef = db
+        .collection("users")
+        .doc(DataOfFriend.idFriend)
+        .collection("chats")
+        .doc(user.uid);
+      const snapShotListChat = await listChatRef.get();
+      if (snapShotListChat.exists) {
+        await listChatRef.set({
+          id: user.uid,
+          seen: false,
+        });
+      }
+  
+      const listMessage = db
         .collection("users")
         .doc(user.uid)
         .collection("chats")
-        .doc(DataOfFriend.idFriend)
-        .collection("messages")
-        .add({
-          id: user.uid,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          message: MessageRef.current.value,
-        });
-    } else {
-      await db
-        .collection("users")
-        .doc(user.uid)
-        .collection("chats")
-        .doc(DataOfFriend.idFriend)
-        .collection("messages")
-        .add({
-          id: user.uid,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          message: MessageRef.current.value,
-        });
-
-      await db
-        .collection("users")
-        .doc(DataOfFriend.idFriend)
-        .collection("chats")
-        .doc(user.uid)
-        .collection("messages")
-        .add({
-          id: user.uid,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          message: MessageRef.current.value,
-        });
-    }
-
-    const listChatRef = db
-      .collection("users")
-      .doc(DataOfFriend.idFriend)
-      .collection("chats")
-      .doc(user.uid);
-    const snapShotListChat = await listChatRef.get();
-    if (snapShotListChat.exists) {
-      await listChatRef.set({
-        id: user.uid,
-        seen: false,
+        .doc(DataOfFriend.idFriend);
+      await listMessage.update({
+        seen: true,
       });
     }
-
-    const listMessage = db
-      .collection("users")
-      .doc(user.uid)
-      .collection("chats")
-      .doc(DataOfFriend.idFriend);
-    await listMessage.update({
-      seen: true,
-    });
-
-    MessageRef.current.value = "";
   };
 
   const callButton = () => {
