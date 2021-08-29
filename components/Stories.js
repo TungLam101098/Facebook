@@ -49,7 +49,7 @@ const Stories = ({ user }) => {
                   src={dataUser.data().AvatarImage}
                   layout="fill"
                 />
-                <div className="absolute opacity-100 z-50 bottom-7 left-12 bg-gray-100 rounded-full">
+                <div className="absolute opacity-100 z-40 bottom-7 left-12 bg-gray-100 rounded-full">
                   <PlusCircleIcon className="h-10 text-blue-500" />
                 </div>
                 <div
