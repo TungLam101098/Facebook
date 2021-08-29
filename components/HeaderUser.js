@@ -364,7 +364,7 @@ function HeaderUser({ userData, id }) {
                   {!sended && !itIsMe && !isFriend && (
                     <button
                       onClick={() => addFriends()}
-                      className="flex items-center text-center w-full"
+                      className="flex items-center text-center w-full cursor-pointer border-0 cursor-pointer"
                     >
                       <UserAddIcon className="h-4 pr-2" /> Thêm bạn bè
                     </button>
@@ -372,7 +372,7 @@ function HeaderUser({ userData, id }) {
                   {sended && (
                     <button
                       onClick={() => deleteFriend()}
-                      className="flex items-center"
+                      className="flex items-center cursor-pointer border-0 cursor-pointer"
                     >
                       <UserRemoveIcon className="h-4 pr-2" /> Huỷ lời mời
                     </button>

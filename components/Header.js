@@ -630,7 +630,7 @@ function Header({ user }) {
                                   notification.id
                                 )
                               }
-                              className="p-2 px-5 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600"
+                              className="p-2 px-5 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 border-0 cursor-pointer"
                             >
                               Chấp nhận
                             </button>
@@ -641,7 +641,7 @@ function Header({ user }) {
                                   notification.id
                                 )
                               }
-                              className="p-2 px-5 py-2 rounded-md bg-gray-400 text-white hover:bg-gray-500 ml-3"
+                              className="p-2 px-5 py-2 rounded-md bg-gray-400 text-white hover:bg-gray-500 ml-3 border-0 cursor-pointer"
                             >
                               Từ chối
                             </button>

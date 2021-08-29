@@ -1,6 +1,7 @@
 import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../firebase";
 import StoryCard from "./StoryCard";
+import { Carousel } from "antd";
 
 function StoryCards({ uid }) {
   const [realtimeStories] = useCollection(
@@ -12,17 +13,19 @@ function StoryCards({ uid }) {
   );
   return (
     <>
-      <div className="flex justify-center space-x-3 mx-auto">
+      {/* <Carousel> */}
         {realtimeStories &&
           realtimeStories.docs.map((story) => (
-            <StoryCard
-              key={story.id}
-              name={story.data().name}
-              src={story.data().imageStory}
-              profile={story.data().AvatarImage}
-            />
+            <div>
+              <StoryCard
+                key={story.id}
+                name={story.data().name}
+                src={story.data().imageStory}
+                profile={story.data().AvatarImage}
+              />
+            </div>
           ))}
-      </div>
+      {/* </Carousel> */}
     </>
   );
 }

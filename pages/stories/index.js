@@ -27,48 +27,53 @@ function Stories({ uid }) {
     };
   };
   const addStory = async () => {
-    if (imageStory && infoUser) {
-      await db
-        .collection("users")
-        .doc(uid)
-        .collection("stories")
-        .add({
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          name: infoUser.surname.concat(" ", infoUser.name),
-          AvatarImage: infoUser.AvatarImage,
-        })
-        .then((doc) => {
-          // funky upload stuff for image
-          const uploadTask = storage
-            .ref(`stories/${doc.id}`)
-            .putString(imageStory, "data_url");
-
-          uploadTask.on(
-            "state_change",
-            null,
-            (error) => console.log(error),
-            () => {
-              // when the upload completed
-              storage
-                .ref("stories")
-                .child(doc.id)
-                .getDownloadURL()
-                .then((url) => {
-                  db.collection("users")
-                    .doc(uid)
-                    .collection("stories")
-                    .doc(doc.id)
-                    .set(
-                      {
-                        imageStory: url,
-                      },
-                      { merge: true }
-                    );
-                });
-              router.push("/");
-            }
-          );
-        });
+    try {
+      if (imageStory && infoUser) {
+        await db
+          .collection("users")
+          .doc(uid)
+          .collection("stories")
+          .add({
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            name: infoUser.surname.concat(" ", infoUser.name),
+            AvatarImage: infoUser.AvatarImage,
+          })
+          .then((doc) => {
+            // funky upload stuff for image
+            const uploadTask = storage
+              .ref(`stories/${doc.id}`)
+              .putString(imageStory, "data_url");
+  
+            uploadTask.on(
+              "state_change",
+              null,
+              (error) => console.log(error),
+              () => {
+                // when the upload completed
+                storage
+                  .ref("stories")
+                  .child(doc.id)
+                  .getDownloadURL()
+                  .then((url) => {
+                    db.collection("users")
+                      .doc(uid)
+                      .collection("stories")
+                      .doc(doc.id)
+                      .set(
+                        {
+                          imageStory: url,
+                        },
+                        { merge: true }
+                      );
+                  });
+                router.push("/");
+              }
+            );
+          });
+      }
+    } catch(error) {
+      alert('Vui lòng thử lại');
+      router.push("/");
     }
   };
   return (

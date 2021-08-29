@@ -15,10 +15,7 @@ function CompletedRegister() {
   const [number, setNumber] = useState(0);
 
   const CompleteRegister = async () => {
-    if (!infoUser) {
-      alert('Đăng ký lỗi!');
-      router.push("/");
-    } else if (imageAvatar) {
+    if (imageAvatar) {
       const { user } = await auth.createUserWithEmailAndPassword(
         infoUser.email,
         infoUser.password

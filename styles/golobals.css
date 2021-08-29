@@ -28,3 +28,12 @@ button {
 p {
 	margin: 0 0 0 1rem !important;
 }
+button.rec-dot{
+  display: none;
+}
+@media screen and (max-width: 567px) {
+  .rec.rec-arrow {
+    display: none;
+    visibility: hidden;
+  }
+}

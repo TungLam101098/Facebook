@@ -114,7 +114,7 @@ const InputBox = ({ user }) => {
             ref={inputRef}
             placeholder={` ${infoUser.name} ơi, bạn đang nghĩ gì thế?`}
           />
-          <button className="block sm:hidden text-blue-500" type="submit" onClick={sendPost}>
+          <button className="block sm:hidden text-blue-500 border-0" type="submit" onClick={sendPost}>
             <PaperAirplaneIcon className="h-8" /> 
           </button>
         </form>

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { selectInfo } from "../../redux/features/userSlice";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import CompletedRegister from '../../components/CompletedRegister';
+import CompletedRegister from "../../components/CompletedRegister";
 
 function ConfirmEmail() {
   const infoUser = useSelector(selectInfo);
@@ -13,11 +13,20 @@ function ConfirmEmail() {
   const [checkEmail, setCheckEmail] = useState(false);
 
   const Continue = () => {
-    if (infoUser.verification === parseInt(inputRef.current.value)) {
-      setCheckEmail(true);
-      console.log('oke')
-    } else {
-      alert("Sai mã xác nhận");
+    try {
+      if (!infoUser.verification) {
+        alert("Đăng ký lỗi, vui lòng thử lại");
+        router.push("/");
+      }
+      if (infoUser.verification === parseInt(inputRef.current.value)) {
+        setCheckEmail(true);
+        console.log("oke");
+      } else {
+        alert("Sai mã xác nhận");
+      }
+    } catch (error) {
+      alert("Đăng ký lỗi, vui lòng thử lại");
+      router.push("/");
     }
   };
 

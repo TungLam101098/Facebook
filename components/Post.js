@@ -149,10 +149,9 @@ const Post = ({
         <p className="pt-4">{message}</p>
       </div>
       {postImage && (
-        <div className="relative bg-auto h-56 md:h-96 bg-white">
-          <ModalElement src={postImage} >
+        <div className="relative bg-auto bg-white">
+          <ModalElement src={postImage} />
             {/* <Image src={postImage} objectFit="cover" layout="fill" /> */}
-          </ModalElement>
         </div>
       )}
       {/* Section post detail */}

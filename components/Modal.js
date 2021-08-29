@@ -7,7 +7,7 @@ function ModalElement({ src, className }) {
       {className? (
         <Image className={className} width="8rem" height="14rem" src={src} />
       ) : (
-        <Image width="100%" height="100%" src={src} />
+        <Image width="100%" src={src} />
       )}
     </>
   )

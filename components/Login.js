@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import { QuestionMarkCircleIcon } from "@heroicons/react/solid";
 import { useRef } from "react";
@@ -10,7 +10,7 @@ import emailjs from "emailjs-com";
 import { Modal } from "antd";
 
 const Login = () => {
-  const verification = Math.floor(10000 + Math.random() * 90000);
+  const [verification, setVerification] = useState(0);
   const router = useRouter();
 
   const dispatch = useDispatch();
@@ -30,13 +30,16 @@ const Login = () => {
   const [visible, setVisible] = useState(false);
   const [checkPassword, setCheckPassword] = useState(false);
 
+  useEffect(() => {
+    setVerification(Math.floor(10000 + Math.random() * 90000));
+  }, []);
   const handleChange = (e) => {
     if (e.target.value.length <= 5) {
       setCheckPassword(true);
     } else {
       setCheckPassword(false);
     }
-  }
+  };
 
   const LoginSubmit = async (e) => {
     // e.preventDefault();
@@ -64,7 +67,7 @@ const Login = () => {
     ) {
       alert("Invalid input");
     } else if (passwordRef.current.value.length <= 5) {
-      alert("Mật khẩu ít nhất 6 ký tự")
+      alert("Mật khẩu ít nhất 6 ký tự");
     } else {
       const birthday =
         datedRef.current.value + monthRef.current.value + yearRef.current.value;
@@ -229,11 +232,11 @@ const Login = () => {
                         onChange={handleChange}
                         ref={passwordRef}
                       />
-                      {
-                        checkPassword && (
-                          <div className="text-red-400 text-sm">Mật khẩu ít nhất 6 ký tự</div>
-                        )
-                      }
+                      {checkPassword && (
+                        <div className="text-red-400 text-sm">
+                          Mật khẩu ít nhất 6 ký tự
+                        </div>
+                      )}
                       <input
                         name="message"
                         defaultValue={verification}

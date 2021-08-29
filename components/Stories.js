@@ -4,6 +4,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../firebase";
 import { useRouter } from "next/router";
 import StoryCards from "./StoryCards";
+import Carousel from "react-elastic-carousel";
 
 const Stories = ({ user }) => {
   const router = useRouter();
@@ -17,6 +18,13 @@ const Stories = ({ user }) => {
     if (!id) return;
     router.push(`/stories?id=${id}`);
   };
+  const breakPoints = [
+    { width: 1, itemsToShow: 1 },
+    { width: 350, itemsToShow: 2 },
+    { width: 550, itemsToShow: 2 },
+    { width: 768, itemsToShow: 2 },
+    { width: 1200, itemsToShow: 2 },
+  ];
 
   return (
     <div className="flex justify-center space-x-3 mx-auto">
@@ -57,10 +65,13 @@ const Stories = ({ user }) => {
             )
         )}
 
-      {realtimeFriends &&
-        realtimeFriends.docs.map((friend) => (
-          <StoryCards key={friend.id} uid={friend.id} />
-        ))}
+      {realtimeFriends && (
+        <Carousel breakPoints={breakPoints} preventDefaultTouchmoveEvent={true}>
+          {realtimeFriends.docs.map((friend) => (
+            <StoryCards key={friend.id} uid={friend.id} />
+          ))}
+        </Carousel>
+      )}
     </div>
   );
 };
