@@ -1,6 +1,6 @@
-function HeaderIcon({ Icon, active }) {
+function HeaderIcon({ Icon, active, link }) {
   return (
-    <div className="flex items-center cursor-pointer 
+    <a href={link} className="flex items-center cursor-pointer 
     md:px-10 sm:h-14 md:hover:bg-gray-100 rounded-xl 
     active:border-b-2 active:border-blue-500 group"
     >
@@ -9,7 +9,7 @@ function HeaderIcon({ Icon, active }) {
          active && "text-blue-500"
        } `
        }/>
-    </div>
+    </a>
   );
 }
 

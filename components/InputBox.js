@@ -129,10 +129,10 @@ const InputBox = ({ user }) => {
         )}
       </div>
       <div className="flex justify-evenly p-3 border-t">
-        <div className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer">
+        {/* <div className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer">
           <VideoCameraIcon className="h-7 text-red-500" />
           <p className="text-xs sm:text-sm xl:text-base m-0">Video trực tiếp</p>
-        </div>
+        </div> */}
         <div
           onClick={() => filepickerRef.current.click()}
           className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer"
@@ -146,10 +146,10 @@ const InputBox = ({ user }) => {
             hidden
           />
         </div>
-        <div className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer">
+        {/* <div className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer">
           <EmojiHappyIcon className="h-7 text-yellow-300" />
           <p className="text-xs sm:text-sm xl:text-base m-0">Cảm xúc/Hoạt động</p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

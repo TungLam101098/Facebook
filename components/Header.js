@@ -344,7 +344,7 @@ function Header({ user }) {
       >
         <Link href="/">
           <Image
-            src="https://cdn0.iconfinder.com/data/icons/social-messaging-ui-color-shapes-2-free/128/social-facebook-2019-circle-512.png"
+            src="https://mb.cision.com/Public/824/2524631/bfd29e7f2ccf048b_800x800ar.jpg"
             width={40}
             height={40}
             layout="fixed"
@@ -397,11 +397,11 @@ function Header({ user }) {
       {/* Center */}
       <div className="hidden lg:flex justify-center flex-grow">
         <div className="flex space-x-6 md:space-x-2">
-          <HeaderIcon active Icon={HomeIcon} />
-          <HeaderIcon Icon={FlagIcon} />
+          <HeaderIcon active Icon={HomeIcon} link="/" />
+          {/* <HeaderIcon Icon={FlagIcon} />
           <HeaderIcon Icon={PlayIcon} />
           <HeaderIcon Icon={ShoppingCartIcon} />
-          <HeaderIcon Icon={UserGroupIcon} />
+          <HeaderIcon Icon={UserGroupIcon} /> */}
         </div>
       </div>
 
@@ -423,7 +423,7 @@ function Header({ user }) {
         >
           {userData?.name}
         </p>
-        <ViewGridIcon className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300" />
+        {/* <ViewGridIcon className="hidden xl:inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300" /> */}
         <ChatIcon
           onClick={() => {
             setStyle(false);
@@ -442,12 +442,12 @@ function Header({ user }) {
           className="inline-flex p-2 h-10 w-10 bg-gray-200 rounded-full text-gray-70 cursor-pointer hover:bg-gray-300"
         />
         {lengthOfNotification !== 0 && (
-          <div className="w-5 h-5 bg-red-500 flex justify-center rounded-full text-white items-center absolute right-[21%] sm:right-[15%] top-[-10%]">
+          <div className="w-5 h-5 bg-red-500 flex justify-center rounded-full text-white items-center absolute right-[23%] sm:right-[18%] top-[-10%]">
             <span>{lengthOfNotification}</span>
           </div>
         )}
         {lengthOfMessage !== 0 && (
-          <div className="w-5 h-5 bg-red-500 flex justify-center rounded-full text-white items-center absolute right-[46%] sm:right-[32%] top-[-10%]">
+          <div className="w-5 h-5 bg-red-500 flex justify-center rounded-full text-white items-center absolute right-[46%] sm:right-[38%] top-[-10%]">
             <span>{lengthOfMessage}</span>
           </div>
         )}

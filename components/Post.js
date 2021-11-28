@@ -172,7 +172,7 @@ const Post = ({
           <span className="hover:underline">
             {realtimeComments && realtimeComments.docs.length} bình luận
           </span>
-          <span className="hover:underline">{shares} chia sẻ</span>
+          {/* <span className="hover:underline">{shares} chia sẻ</span> */}
         </div>
       </div>
       {/* Footer of post */}
@@ -199,10 +199,10 @@ const Post = ({
           <ChatAltIcon className="h-4" />
           <p className="text-sx sm:text-base m-0">Bình luận</p>
         </div>
-        <div className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer rounded-none rounded-br-2xl">
+        {/* <div className="flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 rounded-xl cursor-pointer rounded-none rounded-br-2xl">
           <ShareIcon className="h-4" />
           <p className="text-sx sm:text-base m-0">Chia sẻ</p>
-        </div>
+        </div> */}
       </div>
       <div style={{ borderTop: '0.5px solid #80808054' }} className="bg-white rounded-lg border-t relative">
         <div className="p-5 h-auto pb-5 flex-grow overflow-y-auto scrollbar-hide">

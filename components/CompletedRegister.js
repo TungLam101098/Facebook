@@ -32,6 +32,8 @@ function CompletedRegister() {
               gender: infoUser.gender,
               birthday: infoUser.birthday,
               status: true,
+              isAdmin: false,
+              isActive: true,
               timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             })
             .then(() => {

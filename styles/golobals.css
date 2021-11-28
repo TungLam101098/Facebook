@@ -37,3 +37,7 @@ button.rec-dot{
     visibility: hidden;
   }
 }
+
+body {
+  overflow-y: hidden;
+}

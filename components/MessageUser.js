@@ -160,7 +160,7 @@ function MessageUser({ DataOfFriend, turnOffChat, closeChat, user }) {
       </div>
       <div className="flex justify-center flex-grow absolute bottom-2.5">
         <div className="flex space-x-3">
-          <PlusCircleIcon className="h-7 text-blue-500" />
+          {/* <PlusCircleIcon className="h-7 text-blue-500" />
           <PhotographIcon
             className={`h-7 text-blue-500 ${focused ? "hidden" : ""}`}
           />
@@ -169,19 +169,17 @@ function MessageUser({ DataOfFriend, turnOffChat, closeChat, user }) {
           />
           <PresentationChartLineIcon
             className={`h-7 text-blue-500 ${focused ? "hidden" : ""}`}
-          />
-          <form className="relative ">
+          /> */}
+          <form className="relative ml-8">
             <input
               type="text"
               ref={MessageRef}
               onBlur={onBlur}
               onChange={(e) => handleChange(e)}
-              className={` ${
-                focused ? "w-[248px]" : "w-32"
-              } rounded-xl px-1 pl-2 py-1 bg-gray-200 border-none focus:outline-none`}
+              className={` w-[248px] rounded-xl px-1 pl-2 py-1 bg-gray-200 border-none focus:outline-none`}
               placeholder="Aa"
             />
-            <EmojiHappyIcon className="h-7 text-blue-500 absolute bottom-0.5 right-2" />
+            {/* <EmojiHappyIcon className="h-7 text-blue-500 absolute bottom-0.5 right-2" /> */}
             <button hidden onClick={submitMessage} type="submit">
               Submit
             </button>

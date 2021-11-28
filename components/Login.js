@@ -145,13 +145,13 @@ const Login = () => {
         <div className="w-4/5 block md:grid grid-cols-2 gap-x-10">
           <div className="">
             <img
-              height={106}
+              height={300}
               width={300}
-              src="https://www.facebook.com/rsrc.php/y8/r/dF5SId3UHWd.svg"
+              src="https://mb.cision.com/Public/824/2524631/bfd29e7f2ccf048b_800x800ar.jpg"
               alt=""
             />
             <h4 className="text-5xl">
-              Facebook giúp bạn kết nối và chia sẻ với mọi người trong cuộc sống
+              It's me giúp bạn kết nối và chia sẻ với mọi người trong cuộc sống
               của bạn
             </h4>
           </div>
@@ -178,12 +178,12 @@ const Login = () => {
               >
                 Đăng nhập
               </button>
-              <a
+              {/* <a
                 href="#"
                 className=" text-xl text-blue-400 cursor-pointer hover:underline pb-4"
               >
                 Quên mật khẩu
-              </a>
+              </a> */}
               <hr />
               <button
                 type="button"

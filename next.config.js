@@ -4,6 +4,7 @@ module.exports = {
       "links.papareact.com",
       "cdn0.iconfinder.com",
       "1000logos.net",
+      "mb.cision.com",
       "yt3.ggpht.com",
       "scontent-hkg4-1.xx.fbcdn.net",
       "upload.wikimedia.org",
