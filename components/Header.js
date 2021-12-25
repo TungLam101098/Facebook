@@ -410,7 +410,7 @@ function Header({ user }) {
         {/* Profile pic */}
 
         <Image
-          className=" rounded-full cursor-pointer"
+          className=" rounded-full cursor-pointer object-cover"
           onClick={() => searchUser(user.uid)}
           src={userData?.AvatarImage}
           width={40}
@@ -483,7 +483,7 @@ function Header({ user }) {
               className="flex items-center hover:bg-gray-300 cursor-pointer p-2 mb-4 rounded-md"
             >
               <Image
-                className="rounded-full cursor-pointer"
+                className="rounded-full cursor-pointer object-cover"
                 width={50}
                 height={50}
                 src={userData?.AvatarImage}
@@ -513,7 +513,7 @@ function Header({ user }) {
                 <li key={notification.id}>
                   <div className="flex items-center cursor-pointer p-2 mb-4 rounded-md">
                     <Image
-                      className="rounded-full cursor-pointer"
+                      className="rounded-full cursor-pointer object-cover"
                       width={50}
                       height={50}
                       src={notification.data()?.AvatarImage}
